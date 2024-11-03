@@ -1,0 +1,25 @@
+diff --git a/packages/libfontconfig/src/libfontconfig.pp b/packages/libfontconfig/src/libfontconfig.pp
+index 6aa16d6ae0..701318e38c 100644
+--- a/packages/libfontconfig/src/libfontconfig.pp
++++ b/packages/libfontconfig/src/libfontconfig.pp
+@@ -29,11 +29,16 @@ interface
+ {$ENDIF FPC_DOTTEDUNITS}
+ 
+ Const
+-{$ifndef darwin}
+-  DefaultLibName = 'libfontconfig.so';
+-{$else}  
++  {$if defined(MSWINDOWS)}
++  DefaultLibName = 'fontconfig.dll');
++  {$elseif defined(darwin)}
+   DefaultLibName = 'libfontconfig.dylib';
+-{$endif}  
++  {$elseif defined(haiku) or defined(OpenBSD)}
++  DefaultLibName = 'libfontconfig.so';
++  {$else}
++  DefaultLibName = 'libfontconfig.so.1';
++  {$endif}
++  
+ {$ifdef MSWINDOWS}
+   {$calling stdcall}
+ {$else}

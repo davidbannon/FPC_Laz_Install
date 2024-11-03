@@ -1,0 +1,44 @@
+ lcl/include/clipbrd.inc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lcl/include/clipbrd.inc b/lcl/include/clipbrd.inc
+index c32e9424ba..cebd884069 100644
+--- a/lcl/include/clipbrd.inc
++++ b/lcl/include/clipbrd.inc
+@@ -463,7 +463,8 @@ begin
+   Result:='';
+   MemStream:=TMemoryStream.Create;
+   try
+-    if GetFormat(PredefinedClipboardFormat(pcfText),MemStream) then begin
++    if (GetFormat(PredefinedClipboardFormat(pcfText),MemStream) and (MemStream.Size > 0))
++      or GetFormat(PredefinedClipboardFormat(pcfUtf8Text),MemStream) then begin
+       ASize:=MemStream.Size;
+       if (ASize>0) and (pchar(MemStream.Memory)[ASize-1]=#0) then
+         Dec(ASize);
+ lcl/lcltype.pp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lcl/lcltype.pp b/lcl/lcltype.pp
+index bc63ea8454..3c707d1d63 100644
+--- a/lcl/lcltype.pp
++++ b/lcl/lcltype.pp
+@@ -2734,7 +2734,8 @@ type
+       pcfMetaFilePict,
+       pcfObject,
+       pcfComponent,
+-      pcfCustomData
++      pcfCustomData,
++      pcfUtf8Text
+     );
+ 
+ const
+@@ -2747,7 +2748,8 @@ const
+      'image/lcl.metafilepict',
+      'application/lcl.object',
+      'application/lcl.component',
+-     'application/lcl.customdata'
++     'application/lcl.customdata',
++     'text/plain;charset=utf-8'
+   );
+ 
+ 
