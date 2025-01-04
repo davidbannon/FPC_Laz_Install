@@ -31,13 +31,25 @@ If you have an appropriate compiler installed, perhaps above, perhaps some other
 
 In this example, we assume the system is rpm based, perhaps Fedora etc, again, alternatives are 'deb' and 'pac' depending on your system. Again, you will have to give the root password to install dependencies.
 
-
-
-In both cases, if you know the dependencies are OK, leave out the -p and its parameter. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script. In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
+In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
 
 
-If you already have the Lazarus source downloaded, if ints in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
+If you already have the Lazarus source downloaded, if it is in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
+
+
+
+**Generally**
+--------
+In both cases, if you know the dependencies are OK, leave out the -p and its parameter. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script.
+
+
+
+Both scripts have some basic help, use -h .
+
+
+
+Both scripts will do some default action with no options, it might be right for you, possibly not.
 
 
 
@@ -45,7 +57,7 @@ If you already have the Lazarus source downloaded, if ints in your Downloads dir
 
 **Background**
 --------
-I do a lot of testing of my own code on multiple VMs and endlessly run out of disk space. So, I delete a VM, and, inevitably, shortly after need it again, often with a viable install of FPC and Lazarus.  As we wait for the next release of FPC, that install sually means building a (slightly patched) FPC 3.2.2 and FPC 3.2.4rc1. And then building Lazarus, (my preference) again from source. To build FPC3.2.2 you need FPC3.2.0, to build 3.2.4rc1, you need 3.2.2. Overall, time and, importantly, disk space consuming.
+I do a lot of testing of my own code on multiple VMs and endlessly run out of disk space. So, I delete a VM, and, inevitably, shortly after, need it again, often with an install of FPC and Lazarus.  As we wait for the next release of FPC, that install usually means building a (slightly patched) FPC 3.2.2 and FPC 3.2.4rc1. And then building Lazarus, (my preference) again from source. To build FPC3.2.2 you need FPC3.2.0, to build 3.2.4rc1, you need 3.2.2. Overall, time and, importantly, disk space consuming.
 
 
 
@@ -105,16 +117,14 @@ After the install is finished, you need to use those two additional lines in you
 
 
 
-$> source ~/.bashrc
-
+    $> source ~/.bashrc <enter>
 
 
 Test your compiler with this -
 
 
 
-$> fpc -vh
-
+    $> fpc -vh <enter>
 
 
 You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using.

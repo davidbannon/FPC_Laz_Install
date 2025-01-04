@@ -22,12 +22,16 @@
 DEPENDS="false"
 TARPATH=`pwd`               # first place we look for the tar ball, then check ~/Downloads
 TARBALL="fpc-3-2-4rc1.tgz"    # default filename, override with -t (but -t not working yet)
-FPCHOME="$HOME""/bin/FPC"   # Where I keep multiple copies of FPC
+FPCHOME="$HOME""/bin/FPC"   # Where I keep multiple copies of FPC 
+ARMHOME="NOTSET"            # Arm only and required there, to allow an install on faster disk
+ARMSYS="NO"
 FPCDIR="fpc-3.2.4"          # default below FPCHOME
 PACKAGEMODE="unset"
 APPENDPATH="no"
-INSTALL_CMD_1=""
-INSTALL_CMD_2=""
+INSTALL_CMD=""
+CPU=""
+CPUTAG="NOT SET"            # tag used in file name, empty in 64bit linux, _32 for 32bit
+USERVER="324rc1"            # That is default
 
 function ShowHelp {
 	echo "----- Showing Help"
@@ -35,20 +39,56 @@ function ShowHelp {
 	echo "Expects to find $TARBALL in current directory or ~/Downloads"
 	echo "   -p MOD   Resolve dependencies, packaging model = apt, rpm, pacman"
 	echo "   -f TAG   FPC version tag, default 324rc1, also eg 3.2.0, 322, 3.2.4rc1"
+	echo "   -i path  Path to Install into, required on arm, ignored elsewhere"
 	echo "   -a       Append lines to .bashrc to add this to PATH, cumulative !"
 	echo "   -h       This help page"
 	echo "eg \$> bash ./fpc-tar.bash -p apt -f 3.2.4rc1 -a"
+	echo "   \$> bash ./fpc-tar.bash -p apt -i \$HOME/bin/FPC"
 	exit;
 }
 
 
+# ------------ OK, what system are we on then ?  ----------------------------
+# uname -m may return x86_64, i686, aarch64 (probably raspi)
+
+function GetCPU {
+    CPU=`uname -m`
+    case "$CPU" in 
+        "x86_64")                 # Maybe Linux or Mac
+            COMPILER="ppcx64"
+            TARGET="x86_64-linux"
+            CPUTAG=""
+        ;;
+        "i686")                   # 32 bit, Linux but other tags possible ...
+            COMPILER="ppc386"
+            TARGET="i386-linux"
+            CPUTAG="_32"          # thats, eg, between "fpc-3-2-2" and ".tgz"
+        ;;
+        "aarch64")                # 64bit RasPi (note, not supported yet, nor is Apple Silicon)
+            COMPILER="ppca64"
+            # BASEDIR="$HOME/Ext/64bit/FPC"    # this is on a USB key to get i/o stuff off SDCard
+            TARGET="aarch64-linux"           # check this Davo
+            CPUTAG="_arm64"
+            ARMSYS="YES"
+	    # TARBALL="fpc-3-2-4rc1_arm64.tgz"    # This will mess badly if installing other fpc version !
+        ;;
+    esac
+
+    if [ "$CPUTAG" == "NOT SET" ]; then
+        echo "ERROR - cannot handle $CPU, exiting"
+        exit
+    fi
+}
+
 function ResolveDepends {
-    echo "Resolve Dependency requested, need root access to install gcc, make, binutils"
-    # interesting !  Ubuntu apparently now preevents use of su -c
-    sudo "$INSTALL_CMD_1" "$INSTALL_CMD_2" gcc make binutils		# hope same names everywhere ??
+    CMD_LINE="sudo $INSTALL_CMD gcc make binutils"
+    echo "Resolve Dependency requested, need root access to run this command -"
+    echo "> $CMD_LINE"
+    # interesting !  Ubuntu apparently now prevents use of su -c  ? and Debian does not allow sudo by default !
+    $CMD_LINE
     if [ ! "$?" == "0" ]; then
         echo "Error reported trying to install dependencies, maybe try yourself with -"
-        echo ">  sudo $INSTALL_CMD_1 $INSTALL_CMD_2 libx11-dev libgtk2.0-dev"
+        echo ">  $CMD_LINE"
         exit
     fi
 }
@@ -68,19 +108,16 @@ function GetTarBallPath {
 function SetInstallMode {
     case "$PACKAGEMODE" in
         apt | deb | debian)
-           INSTALL_CMD_1="apt"
-           INSTALL_CMD_2="install"
+           INSTALL_CMD="apt install"
            ;;
         rpm | dnf)
-           INSTALL_CMD_1="dnf"
-           INSTALL_CMD_2="install"
+           INSTALL_CMD="dnf install"
            ;;
          pacman| pac | arch)
-           INSTALL_CMD_1="pacman"
-           INSTALL_CMD_2="-S"
+           INSTALL_CMD="pacman -S --needed"
            ;;
     esac
-    if [ "$INSTALL_CMD_1" == "" ]; then
+    if [ "$INSTALL_CMD" == "" ]; then
         echo "Need to specify a package manager, exiting ...."
         ShowHelp
     fi
@@ -90,15 +127,15 @@ function CheckUserVer {
     TARBALL=""
     case $USERVER in	# I want distinctly different file names but FPC needs correct dir names
 	320 | 3.2.0)
-	    TARBALL="fpc-3-2-0.tgz"
+	    TARBALL="fpc-3-2-0""$CPUTAG"".tgz"
 	    FPCDIR="fpc-3.2.0"
 	    ;;
 	322 | 3.2.2)
-	    TARBALL="fpc-3-2-2.tgz"
+	    TARBALL="fpc-3-2-2""$CPUTAG"".tgz"
 	    FPCDIR="fpc-3.2.2"
       	    ;;
 	324rc1 | 3.2.4rc1)
-	    TARBALL="fpc-3-2-4rc1.tgz"
+	    TARBALL="fpc-3-2-4rc1""$CPUTAG"".tgz"
 	    FPCDIR="fpc-3.2.4"
 	    ;;
     esac
@@ -112,15 +149,17 @@ function CheckUserVer {
 
 # ------------- It starts here ---------------------
 
+GetCPU                          # exits if cannot handle cpu
 
-while getopts "p:at:f:h" opt; do
+while getopts "p:at:f:i:h" opt; do
 	case $opt in
         p) PACKAGEMODE="$OPTARG"       
             ;;
 	f) USERVER="$OPTARG"
-		CheckUserVer	# will exit if provided ver unsuitable
 		;;
 	a) APPENDPATH="yes"
+		;;
+	i) ARMHOME="$OPTARG"
 		;;
 	h) 
            ShowHelp 
@@ -131,8 +170,22 @@ while getopts "p:at:f:h" opt; do
     esac
 done
 
+CheckUserVer	# will exit if provided ver unsuitable
+
+if [ $ARMSYS == "YES" ]; then
+    if [ $ARMHOME == "NOTSET" ]; then
+        echo "Arm system requires the -i path option because you might need to"
+        echo "install on a faster and more reliable disk system other than the SDCard."
+        echo "  eg   \$>  bash ./fpc-tar.bash -i \$HOME/bin/FPC"
+        exit
+    else
+        FPCHOME="$ARMHOME"
+    fi
+fi
 
 FPCPATH="$FPCHOME"/"$FPCDIR"    #  full path to dir were this version is put by tar
+
+echo "----- CPU is $CPU and tarball is $TARBALL"
 
 GetTarBallPath			# exits if no tarball found
 echo "----- TARBALL is $TARPATH/$TARBALL"
@@ -144,10 +197,15 @@ else
 	SetInstallMode
     	ResolveDepends
 fi
-
-cd "$HOME"                            # The tarballs always starts from $HOME
+if [ $ARMSYS == "YES" ]; then
+    mkdir -p $ARMHOME			# should check that it exists now ...
+    cd "$ARMHOME"
+else
+    cd "$HOME"                            # The tarballs always starts from $HOME except with Arm
+fi
 tar xzf "$TARPATH"/"$TARBALL"
 cd "$FPCPATH"
+#                  $FPCHOME is, eg, .../FPC
 bin/fpcmkcfg -d basepath="$FPCHOME/fpc-""\$fpcversion" > "$HOME"/.fpc.cfg
 if [ "$APPENDPATH" == "yes" ]; then
 	echo "export OLD_PATH=\"\$PATH\"" >> ~/.bashrc

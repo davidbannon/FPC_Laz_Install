@@ -19,14 +19,20 @@ to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
 If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (possibly) download, compile and configure Lazarus. -
 &gt;$  <monospace>bash ./make-lazarus.bas -p rpm -f 3_6  -d &lt;enter&gt;</monospace>
 In this example, we assume the system is rpm based, perhaps Fedora etc, again, alternatives are 'deb' and 'pac' depending on your system. Again, you will have to give the root password to install dependencies.
+In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
-In both cases, if you know the dependencies are OK, leave out the -p and its parameter. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script. In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
+If you already have the Lazarus source downloaded, if it is in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
 
-If you already have the Lazarus source downloaded, if ints in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
+<size:large><bold>Generally</bold></size:large>
+In both cases, if you know the dependencies are OK, leave out the -p and its parameter. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script.
+
+Both scripts have some basic help, use -h .
+
+Both scripts will do some default action with no options, it might be right for you, possibly not.
 
 
 <size:large><bold>Background</bold></size:large>
-I do a lot of testing of my own code on multiple VMs and endlessly run out of disk space. So, I delete a VM, and, inevitably, shortly after need it again, often with a viable install of FPC and Lazarus.  As we wait for the next release of FPC, that install sually means building a (slightly patched) FPC 3.2.2 and FPC 3.2.4rc1. And then building Lazarus, (my preference) again from source. To build FPC3.2.2 you need FPC3.2.0, to build 3.2.4rc1, you need 3.2.2. Overall, time and, importantly, disk space consuming.
+I do a lot of testing of my own code on multiple VMs and endlessly run out of disk space. So, I delete a VM, and, inevitably, shortly after, need it again, often with an install of FPC and Lazarus.  As we wait for the next release of FPC, that install usually means building a (slightly patched) FPC 3.2.2 and FPC 3.2.4rc1. And then building Lazarus, (my preference) again from source. To build FPC3.2.2 you need FPC3.2.0, to build 3.2.4rc1, you need 3.2.2. Overall, time and, importantly, disk space consuming.
 
 My solution is to have a prebuilt set of everything needed for FPC 3.2.0, 3.2.2 and 3.2.4rc1 stored, each in their own tarball and a script to put that content back where it needs to be and setup PATH and config. And another script that will build a Lazarus just as easily. I always build Lazarus from source, great test that FPC is setup correctly.
 
@@ -57,11 +63,11 @@ This install only takes a few minutes, mostly while dependencies are loaded or a
 
 After the install is finished, you need to use those two additional lines in your .bashrc so the compiler is on your path -
 
-$&gt; source ~/.bashrc
+<monospace>$&gt; source ~/.bashrc &lt;enter&gt;</monospace>
 
 Test your compiler with this -
 
-$&gt; fpc -vh
+<monospace>$&gt; fpc -vh &lt;enter&gt;</monospace>
 
 You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using.
 
@@ -105,8 +111,8 @@ You can install as many different versions of Lazarus as you like this way, each
 
 
 </note-content></text>
-  <last-change-date>2024-11-03T10:32:46.4317437+11:00</last-change-date>
-  <last-metadata-change-date>2024-11-03T10:32:46.4317437+11:00</last-metadata-change-date>
+  <last-change-date>2024-11-03T12:14:26.6105778+11:00</last-change-date>
+  <last-metadata-change-date>2024-11-03T12:14:26.6105778+11:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>

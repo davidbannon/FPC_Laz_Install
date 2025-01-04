@@ -43,6 +43,7 @@ LAZZIPPATH=`pwd`
 
 INSTALL_CMD_1="apt"	# Manjero, its "pacman"   
 INSTALL_CMD_2="install"     # Manjero, its "-S"
+INSTALL_CMD_3=""     # 
 
 # INSTALL_CMD="pacman -S"	        # Manjero
 
@@ -95,34 +96,29 @@ function FPCInstalled () {
 function SetInstallMode {
     case "$PACKAGEMODE" in
 	apt | deb | debian)
-	   GTK2DEPS_1="libx11-dev"
-	   GTK2DEPS_2="libgtk2.0-dev"
+	   GTK2DEPS="libx11-dev libgtk2.0-dev"
 	   QT5DEPS="libqt5pas-dev"
 	   QT6DEPS="libqt6pas-dev"
-	   INSTALL_CMD_1="apt"
-	   INSTALL_CMD_2="install" 
+	   INSTALL_CMD="apt install" 
 	   ;;
 	rpm | dnf)
 	   QT5DEPS="qt5pas-devel"
 	   QT6DEPS="qt6pas-devel"
-	   GTK2DEPS_1="libX11-devel"
-	   GTK2DEPS_2="gtk2-devel"
-	   INSTALL_CMD_1="dnf"
-	   INSTALL_CMD_2="install" 
+	   GTK2DEPS="libX11-devel gtk2-devel"
+	   INSTALL_CMD="dnf install" 
 	   ;;
 	 pacman| pac | arch)
 	   QT5DEPS="qt5pas"             # yes, Nov 2024, repo version is current
 	   QT6DEPS="qt6pas"             # no, Nov, 2024, repo version one rev beehind, maybe OK ?
-	   GTK2DEPS_1="libx11"          # probably already present
-	   GTK2DEPS_2=""                # Arch does no do -dev or -devel libraries !
-	   INSTALL_CMD_1="pacman"
-	   INSTALL_CMD_2="-S" 
+	   GTK2DEPS="gtk2 libx11"       # no -dev packages in Arch !
+	   INSTALL_CMD="pacman -S --needed"
 	   ;;
     esac
     if [ "$INSTALL_CMD_1" == "" ]; then
 	echo "Need to specify a package manager, exiting ...."
 	ShowHelp
     fi
+    echo "install mode set"
 }
 
 
@@ -137,50 +133,28 @@ if [ ! "$PACKAGEMODE" == "" ]; then
     fi
     SetInstallMode		# does not return if not set properly
     case "$LAZWIDGET" in
-        gtk2)   
-	    echo "ROOT required to run 'sudo $INSTALL_CMD_1 $INSTALL_CMD_2 libx11-dev libgtk2.0-dev'"
-	    sudo "$INSTALL_CMD_1" "$INSTALL_CMD_2" "$GTK2DEPS_1" "$GTK2DEPS_2"
-	    if [ ! "$?" == "0" ]; then
-	        echo "========================================="
-                echo "Error reported trying to install dependencies, maybe try yourself with -"
-		echo ">  sudo $INSTALL_CMD_1 $INSTALL_CMD_2 $GTK2DEPS_1 $GTK2DEPS_2"
-		exit
-	    fi
+    gtk2)
+	    CMD_LINE="sudo $INSTALL_CMD $GTK2DEPS"
 	    ;;
-	qt5)    
-            LIBQT5=`find / -name libQt5Pas.so 2>/dev/null`	# nothing after .so indicates -dev package already there.
-	    if [ "$LIBQT5" == "" ]; then
-	        echo "----- Installing libqt5pas"
-	        echo "ROOT required to run 'sudo $INSTALL_CMD libqt5pas-dev'"
-	        sudo "$INSTALL_CMD_1" "$INSTALL_CMD_2" "$QT5DEPS" 
-	        if [ ! "$?" == "0" ]; then
-                    echo "Error reported trying to install dependencies, maybe try yourself with -"
-		    echo ">  sudo $INSTALL_CMD_1 $INSTALL_CMD_2 $QT5DEPS"
-		    exit
-	        fi
-	        LIBQT5=`find / -name libQt5Pas.so 2>/dev/null`
-                if [ "$LIBQT5" == "" ]; then
-	            echo "===== ERROR cannot install libqt5pas, exiting"
-		    exit
-		else
-		    echo "----- Have libqt5pas, hope its right version"
-		fi	                
-	     fi
-	     ;;
-	 qt6)    
-	      echo "ROOT required to run 'sudo $INSTALL_CMD libqt5pas-dev'"
-	      sudo "$INSTALL_CMD_1" "$INSTALL_CMD_2" "$QT6DEPS" 
-	      if [ ! "$?" == "0" ]; then
-                  echo "Error reported trying to install dependencies, maybe try yourself with -"
-		  echo ">  sudo $INSTALL_CMD_1 $INSTALL_CMD_2 $QT6DEPS"
-		  exit
-	      fi
-	      ;;
+	qt5)
+	    CMD_LINE="sudo $INSTALL_CMD $QT5DEPS"
+	    ;;
+	qt6)
+	    CMD_LINE="sudo $INSTALL_CMD $QT6DEPS"
+	    ;;
     esac
+    echo "root required to run \"$CMD_LINE\""
+    $CMD_LINE
+    if [ ! "$?" == "0" ]; then
+        echo "========================================="
+        echo "Error reported trying to install dependencies, maybe try yourself with -"
+	echo ">  $CMD_LINE"
+	exit
+    fi
+    echo "deps resolved"
 else
     echo "===== Assuming Dependencies are OK"
 fi
-
 
 if [ "$FPCVER" != "$FPCFOUND" ]; then
     if [ "$FPCVER2" != "$FPCFOUND" ]; then
