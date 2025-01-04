@@ -3,17 +3,25 @@ FPC-Lazarus Installer
 
 
 
-These are some quite idocyntric tools for my own use **on Linux**. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good.
+These are some quite idocyntric tools for my own use **on Linux**. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good. Supported, in one way or another is
+
+* Linux x86_64 - 64bit
+
+* Linux i686 - 32bit
+
+* Linux armhf - 32bit (eg Raspberry Pi)
+
+* Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)
 
 
 
-With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its Linux 64bit only, tested on a variety of distros. And, its very easy to discard when you are done.
+With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of **glibc earlier than 2.34** so should be usable on all systems you are likely to come across.
 
 
 
 **Quick Start FPC**
 --------
-Download from Releases eg  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. Type (In that directory, replace 'deb' with 'rpm' or 'pac' depending on your package manager) -
+(eg x86_64) Download from Releases eg  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. Type (In that directory, replace 'deb' with 'rpm' or 'pac' depending on your package manager) -
 
     >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb <enter>
 You will be asked to give the root password to install necessary dependencies and advised to run -
@@ -23,11 +31,20 @@ to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
 
 
 
+**ARM ?** because, on ARM, I usually install the compiler and Lazarus on a seperate disk to avoid problems with the SDCard, on arm, you MUST specify where to install to with the -i option. For example, if you are happy putting the compiler in $HOME/bin (ie on the SDCard) use, perhaps -
+
+
+
+    >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb -i $HOME/bin/FPC<enter>
+
+
+
+
 **Quick Start Lazarus**
 --------
 If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (possibly) download, compile and configure Lazarus. -
 
->$  `bash ./make-lazarus.bas -p rpm -f 3_6  -d <enter>`
+>$  `bash ./make-lazarus.bash -p rpm -f 3_6  -d <enter>`
 
 In this example, we assume the system is rpm based, perhaps Fedora etc, again, alternatives are 'deb' and 'pac' depending on your system. Again, you will have to give the root password to install dependencies.
 
@@ -71,7 +88,7 @@ Everything ends up in $HOME/bin/FPC or $HOME/bin/Lazarus and is easily deleted w
 
 **Free Pascal Compiler**
 --------
-In the releases section, you will find three FPC<version>.tgz files, I suggest you want fpc-3-2-4rc1.tgz, and a small zip containing two scripts. Download a fpc tarball (do not untar it, the script will do that fo you) and the zip, unzip it and end up with these files -
+In the releases section, you will find several FPC<version>.tgz files, I suggest you want fpc-3-2-4rc1.tgz (on x86_64), and a small zip containing two scripts. Download a fpc tarball (do not untar it, the script will do that fo you) and the zip, unzip it and end up with these files -
 
 
 
@@ -127,7 +144,7 @@ Test your compiler with this -
     $> fpc -vh <enter>
 
 
-You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using.
+You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using. Make no mistake, that .cfg file is IMPORTANT!
 
 
 
@@ -197,7 +214,7 @@ You can install as many different versions of Lazarus as you like this way, each
 
 
 
-**Artix (Arch based)**. Has a viable qt5pas, does not need any (gtk2) dependencies to build Lazarus. All worked well but colour theme totally unusable. Black, even the white bits are black. Menu not refreshed until re-login.
+**Artix (Arch based)**. Has a viable qt5pas, does not need any (gtk2) dependencies to build Lazarus. All worked well but colour theme totally unusable. Black, even the white bits are black. Menu not refreshed until re-login. Very strange.
 
 
 

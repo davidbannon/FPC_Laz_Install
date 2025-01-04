@@ -4,20 +4,29 @@
   
 <text xml:space="preserve"><note-content version="0.1"><underline>FPC-Lazarus Installer</underline>
 
-These are some quite idocyntric tools for my own use <bold>on Linux</bold>. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good.
+These are some quite idocyntric tools for my own use <bold>on Linux</bold>. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good. Supported, in one way or another is
+<list><list-item dir="ltr">Linux x86_64 - 64bit</list-item></list>
+<list><list-item dir="ltr">Linux i686 - 32bit</list-item></list>
+<list><list-item dir="ltr">Linux armhf - 32bit (eg Raspberry Pi)</list-item></list>
+<list><list-item dir="ltr">Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)</list-item></list>
 
-With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its Linux 64bit only, tested on a variety of distros. And, its very easy to discard when you are done.
+With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of <bold>glibc earlier than 2.34</bold> so should be usable on all systems you are likely to come across.
 
 <size:large><bold>Quick Start FPC</bold></size:large>
-Download from Releases eg  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. Type (In that directory, replace 'deb' with 'rpm' or 'pac' depending on your package manager) -
+(eg x86_64) Download from Releases eg  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. Type (In that directory, replace 'deb' with 'rpm' or 'pac' depending on your package manager) -
 <monospace>&gt;$ bash ./fpc-tar.bash -f 324rc1 -a -p deb &lt;enter&gt;</monospace>
 You will be asked to give the root password to install necessary dependencies and advised to run -
 <monospace>&gt;$ source ~/.bashrc &lt;enter&gt;</monospace>
 to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
 
+<bold>ARM ?</bold> because, on ARM, I usually install the compiler and Lazarus on a seperate disk to avoid problems with the SDCard, on arm, you MUST specify where to install to with the -i option. For example, if you are happy putting the compiler in $HOME/bin (ie on the SDCard) use, perhaps -
+
+<monospace>&gt;$ bash ./fpc-tar.bash -f 324rc1 -a -p deb -i $HOME/bin/FPC&lt;enter&gt;</monospace>
+
+
 <size:large><bold>Quick Start Lazarus</bold></size:large>
 If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (possibly) download, compile and configure Lazarus. -
-&gt;$  <monospace>bash ./make-lazarus.bas -p rpm -f 3_6  -d &lt;enter&gt;</monospace>
+&gt;$  <monospace>bash ./make-lazarus.bash -p rpm -f 3_6  -d &lt;enter&gt;</monospace>
 In this example, we assume the system is rpm based, perhaps Fedora etc, again, alternatives are 'deb' and 'pac' depending on your system. Again, you will have to give the root password to install dependencies.
 In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
@@ -39,7 +48,7 @@ My solution is to have a prebuilt set of everything needed for FPC 3.2.0, 3.2.2 
 Everything ends up in $HOME/bin/FPC or $HOME/bin/Lazarus and is easily deleted when unneeded. (And possibly $HOME/.local/share/applications/lazarus.desktop and $HOME/bin/lazarus.bash).
 
 <size:large><bold>Free Pascal Compiler</bold></size:large>
-In the releases section, you will find three FPC&lt;version&gt;.tgz files, I suggest you want fpc-3-2-4rc1.tgz, and a small zip containing two scripts. Download a fpc tarball (do not untar it, the script will do that fo you) and the zip, unzip it and end up with these files -
+In the releases section, you will find several FPC&lt;version&gt;.tgz files, I suggest you want fpc-3-2-4rc1.tgz (on x86_64), and a small zip containing two scripts. Download a fpc tarball (do not untar it, the script will do that fo you) and the zip, unzip it and end up with these files -
 
 fpc-3-2-4rc1.tgz - that contains two directory trees, one for compiler, one for source.
 fpc-tar.bash - a script to untar the above and setup the result ready for use.
@@ -69,7 +78,7 @@ Test your compiler with this -
 
 <monospace>$&gt; fpc -vh &lt;enter&gt;</monospace>
 
-You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using.
+You will get an error message because you did not provide something to compile but you will see the compiler version and which fpc.cfg its using. Make no mistake, that .cfg file is IMPORTANT!
 
 <size:large><bold>Lazarus</bold></size:large>
 OK, so, now you want to install Lazarus with your shiny new compiler ?
@@ -105,20 +114,20 @@ You can install as many different versions of Lazarus as you like this way, each
 
 <bold>Mageia</bold> - strange package names. Requires lib64x11-devel. Does not have Qt6, its repo Qt5Pas is way out of date.  Manually install libQt5Pas-dev before running the make-lazarus script and run it without the -p. Or just make the gtk2 version.
 
-<bold>Artix (Arch based)</bold>. Has a viable qt5pas, does not need any (gtk2) dependencies to build Lazarus. All worked well but colour theme totally unusable. Black, even the white bits are black. Menu not refreshed until re-login.
+<bold>Artix (Arch based)</bold>. Has a viable qt5pas, does not need any (gtk2) dependencies to build Lazarus. All worked well but colour theme totally unusable. Black, even the white bits are black. Menu not refreshed until re-login. Very strange.
 
 
 
 
 </note-content></text>
-  <last-change-date>2024-11-03T12:14:26.6105778+11:00</last-change-date>
-  <last-metadata-change-date>2024-11-03T12:14:26.6105778+11:00</last-metadata-change-date>
+  <last-change-date>2025-01-04T12:28:32.2423228+11:00</last-change-date>
+  <last-metadata-change-date>2025-01-04T12:28:32.2423228+11:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>
-  <width>932</width>
-  <height>505</height>
-  <x>574</x>
-  <y>27</y>
+  <width>1154</width>
+  <height>814</height>
+  <x>249</x>
+  <y>30</y>
   <open-on-startup>False</open-on-startup>
 </note>
