@@ -18,6 +18,13 @@ With what is here, you can install just the compiler you want to use and use it 
 You will be asked to give the root password to install necessary dependencies and advised to run -
 <monospace>&gt;$ source ~/.bashrc &lt;enter&gt;</monospace>
 to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
+A sequence of commands, useful for copy and paste, might be (on a deb x86_64 system) -
+<monospace>&gt;$ cd ~/Downloads</monospace>
+<monospace>&gt;$ wget https://raw.githubusercontent.com/davidbannon/FPC_Laz_Install/refs/heads/main/fpc-tar.bash</monospace>
+<monospace>&gt;$ wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz</monospace>
+<monospace>&gt;$ bash ./fpc-tar.bash -f 324rc1 -a -p deb</monospace>
+<monospace>....</monospace>
+<monospace>&gt;$ source ~/.bashrc</monospace>
 
 <bold>ARM ?</bold> because, on ARM, I usually install the compiler and Lazarus on a seperate disk to avoid problems with the SDCard, on arm, you MUST specify where to install to with the -i option. For example, if you are happy putting the compiler in $HOME/bin (ie on the SDCard) use, perhaps -
 
@@ -120,8 +127,8 @@ You can install as many different versions of Lazarus as you like this way, each
 
 
 </note-content></text>
-  <last-change-date>2025-01-04T12:28:32.2423228+11:00</last-change-date>
-  <last-metadata-change-date>2025-01-04T12:28:32.2423228+11:00</last-metadata-change-date>
+  <last-change-date>2025-01-05T22:05:27.9146336+11:00</last-change-date>
+  <last-metadata-change-date>2025-01-05T22:05:27.9146336+11:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>

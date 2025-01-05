@@ -14,7 +14,12 @@
 # It can install dependencies, append a path to your .bashrc, create .fpc.cfg
 # To make initial tarball, on system with working install, do from $HOME, eg
 # $> tar czf fpc-324rc1.tgz bin/FPC/SRC/source-release_3_2_4-branch/ bin/FPC/fpc-3.2.4
+# or, on ARM, from where you can see the FPC directory.
+# $> cd ~/bin; czf fpc-324rc1_arm64.tgz bin/FPC/SRC/source-release_3_2_4-branch/ bin/FPC/fpc-3.2.4
 #
+# Note : armhf, ie 32bit tarball exits but not installable with this script. That is
+#        because you will probably be running on 64bit hardware and I cannot detect it.
+
 # Use  -h for help
 #
 # David Bannon, last update 2024/10/30
@@ -64,13 +69,12 @@ function GetCPU {
             TARGET="i386-linux"
             CPUTAG="_32"          # thats, eg, between "fpc-3-2-2" and ".tgz"
         ;;
-        "aarch64")                # 64bit RasPi (note, not supported yet, nor is Apple Silicon)
+        "aarch64")                # 64bit RasPi (note - not tested with Apple Silicon)
             COMPILER="ppca64"
-            # BASEDIR="$HOME/Ext/64bit/FPC"    # this is on a USB key to get i/o stuff off SDCard
+            # BASEDIR="$HOME/Ext/64bit/FPC"  # this is on a USB key to get i/o stuff off SDCard
             TARGET="aarch64-linux"           # check this Davo
             CPUTAG="_arm64"
             ARMSYS="YES"
-	    # TARBALL="fpc-3-2-4rc1_arm64.tgz"    # This will mess badly if installing other fpc version !
         ;;
     esac
 
@@ -93,7 +97,7 @@ function ResolveDepends {
     fi
 }
 
-# checks for and, if necessary sets path to tarball, exist if we cannot proceed
+# checks for and, if necessary sets path to tarball, exits if we cannot proceed
 function GetTarBallPath {
     if [ ! -e "$TARPATH"/"$TARBALL" ]; then
         if [ ! -e "$HOME/Downloads/""$TARBALL" ]; then     # sad, its not there
@@ -181,6 +185,8 @@ if [ $ARMSYS == "YES" ]; then
     else
         FPCHOME="$ARMHOME"
     fi
+    # ToDo : if we are running 32bit (on 64bit hardware?) we should change $CPUTAG to _armhf !
+    #        not sure about a reliable test ? file /usr/bin/ls | grep armhf ??
 fi
 
 FPCPATH="$FPCHOME"/"$FPCDIR"    #  full path to dir were this version is put by tar

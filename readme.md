@@ -29,6 +29,14 @@ You will be asked to give the root password to install necessary dependencies an
     >$ source ~/.bashrc <enter>
 to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
 
+A sequence of commands, useful for copy and paste, might be (on a deb x86_64 system) -
+
+    >$ cd ~/Downloads
+    >$ wget https://raw.githubusercontent.com/davidbannon/FPC_Laz_Install/refs/heads/main/fpc-tar.bash
+    >$ wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
+    >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb
+    ....
+    >$ source ~/.bashrc
 
 
 **ARM ?** because, on ARM, I usually install the compiler and Lazarus on a seperate disk to avoid problems with the SDCard, on arm, you MUST specify where to install to with the -i option. For example, if you are happy putting the compiler in $HOME/bin (ie on the SDCard) use, perhaps -
