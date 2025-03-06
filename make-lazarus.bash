@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -e
 
-# Copyright (C) 2024 David Bannon
+# Copyright (C) 2024, 2025 David Bannon
 
 #    License:
 #    This code is licensed under MIT License, see the file License.txt
@@ -14,38 +14,66 @@ set -e
 # ---------------------------------------------------------
 # A quick and dirty script to build a working Lazarus
 # install on a deb based machine (and PCLinuxOS too).
-# Always installs Lazarus from source, looks for a zip in current dir, ~/Downloads
+# Always installs Lazarus from source, looks for a zip in current dir and ~/Downloads
 # depends on what ever FPC is on PATH and
 # if Qt5 enabled, libqt5pas-dev. Checks for both and tries to
 # install from distro repo if not already present.
 # Note that repo versions of libqt5pas-dev may not be current.
-# Does not consider FPC-main suitable, use 3.2.3 or 3.2.4
+# Does not consider FPC-main suitable, use 3.2.4  (Hmm, why ??)
 # Creates a Lazarus Desktop and icon so should appear in your menus. 
 
-# NOTE - We build with fpc322 because thats how Lazarus does it, as of June 2024.
+# NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
-# Edit below to chose Qt5 (over gtk2) and Lazarus-Fixes, later FPC
-
-# David Bannon - 2024-04-18
-# LAZVER="4_0_RC_1"
-LAZVER="3_6"		    # as it appears in file names
+# David Bannon - 2025-03-06
+LAZVER="3_8"		    # as it appears in file names, this is default !
+LAZZIPNAME=""           # full name of the lazarus zip (no path)
+LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
+LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
 LAZWIDGET="gtk2"        # Use -w to set QT5 or QT6
-FPCVER="3.2.2"          # Now, is not acceptable, so 322 or 324rc1 at present
+# LAZDEBUG=""             # Has true if we want to build a debug version of Lazarus (its the default !)
+FPCVER="3.2.2"          # Now, is not acceptable, so 324 only at present
 FPCVER2="3.2.4"         # right now, thats all we accept, can do better.
-LAZROOTDIR="$HOME/bin/Lazarus"                # Will have to override if, eg, RasPi
-MACOS="false"
-PACKAGEMODEE=""		# empty means don't install dependencies
-# LAZFINALNAME="lazarus-fixes_3_0"
-DOWNLOAD="false"        # If true, will try and get indicated Lazarus from gitlab
+LAZROOTDIR="$HOME/bin/Lazarus"             # Will have to override if, eg, RasPi
+LAZROOTDIRPI="$HOME/Ext/64bit/Lazarus"     # Alt, better disk location for RasPi on my system
+MACOS="false"                              # Has not been tested for awhile !
+DOWNLOAD="false"        # If true, will try and get indicated Lazarus from gitlab if necessary
+MVLAZDIR="false"        # True is we need to fix a lazarus-lazarus situation ! (Tag only ?)
+LAZZIPPATH=`pwd`        # we look for a zip fime in current dir, failing that, in ~/Downloads
 
-LAZZIPPATH=`pwd`
+INSTALL_CMD=""      # is set to distro install command if user sets -r
 
+# =============== This function may need updating as new releases appear.
 
-INSTALL_CMD_1="apt"	# Manjero, its "pacman"   
-INSTALL_CMD_2="install"     # Manjero, its "-S"
-INSTALL_CMD_3=""     # 
+function CleanLazVersion {
+	#echo "in CleanLazVersion LAZVER = $LAZVER"
+	case "$LAZVER" in
+		3_6 | 3_8 | 4_0)    # Tags. OK, the 4_0 is a guess !
+			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
+			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
+			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
+			MVLAZDIR="true"
+			;;
+		main)
+			LAZZIPNAME="lazarus-main.zip"
+			LAZDOWNURL="$LAZGITHUB"main/"$LAZZIPNAME"
+			LAZFINALNAME="lazarus-""$LAZVER"               # hypen, will be same as unzipped dir
+			;;
+		fixes_4)            # This is a branch
+			LAZZIPNAME="lazarus-""$LAZVER"".zip"
+			LAZDOWNURL="$LAZGITHUB"/"$LAZVER"/"$LAZZIPNAME"
+			LAZFINALNAME="lazarus-""$LAZVER"               # hypen, will be same as unzipped dir
+			;;		
+	esac
+	if [ "$LAZZIPNAME" == "" ]; then
+		echo "Cannot use a lazarus tag, branch or release like [$LAZVER], exiting ...."
+		ShowHelp
+    fi	
+}
 
-# INSTALL_CMD="pacman -S"	        # Manjero
+# https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/main/lazarus-main.zip
+# https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/fixes_4/lazarus-fixes_4.zip
+# A Tag, eg 3.8, 40rc2 etc
+# https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/lazarus_4_0RC2/lazarus-lazarus_4_0RC2.zip		
 
 # ------ Best not to change too much below here --------
 
@@ -54,46 +82,24 @@ DESKTOPDIR="$HOME/.local/share/applications"
 function ShowHelp {
 	echo "Install from source, a lazarus based on src zip in current dir"
 	echo "   -d        Download the Lazarus file if necessary."
-	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
+	echo "   -r        Resolve dependencies if necessary"
+#	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
 	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
-	echo "   -f rel    Lazarus Release, from file name, after lazarus-lazarus_  3_6"
+	echo "   -f rel    Lazarus Release, tag from file name, defaults to 3_8"
+	echo "             can be any one of main; fixes_4; lazarus-lazarus_* = [3_6, 3_8, 4_0_RC_1, 4_0RC2]"
+	echo "   -i dir    Install dir, default $HOME/bin/Lazarus but on a Pi maybe move to better disk" 
+	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!   
 	echo "   -m        Its a Mac"
+#	echo "   -D        Make a Debug version of Lazarus"    # default build of Lazarus is DEBUG
 	echo "   -h        This help page"
 	echo "If using -p, its a good idea to ensure your package manager is up todate."
 	exit;
 }
 
-while getopts "dp:w:f:mh" opt; do
-    case $opt in
-        d) DOWNLOAD="true"            # 
-            ;;
-        p) PACKAGEMODE="$OPTARG"      # -p deb | rpm | pac
-            ;;
-        w) LAZWIDGET="$OPTARG"        # -w gtk2 | qt5 | qt6
-	        ;;
-	    f) LAZVER="$OPTARG"           # -w 3_6  | -w 4_0_RC_1
-	        ;;
-	    m) MACOS="true"
-	        ;;
-	h) ShowHelp 
-	   ;;			      # and exit !	
-    esac
-done
-
-LAZDOWNLOAD="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/lazarus_$LAZVER/lazarus-lazarus_""$LAZVER"".zip"
-LAZFINALNAME="lazarus_""$LAZVER"
-LAZZIPNAME=`basename "$LAZDOWNLOAD"`
-
-if [ $(uname -m) == "aarch64" ]; then      # WE assume RasPi, NOT SAFE !
-    LAZROOTDIR="$HOME/Ext/64bit/Lazarus"    
-fi
-
-function FPCInstalled () {
-#   expect eg "3.2.2", maybe 3.2.3 or 3.2.4  ?
-    echo `fpc -iV`
-}
-
 function SetInstallMode {
+	which dnf >&1 >/dev/null && PACKAGEMODE="dnf"     # PACKAGEMODE is a local variable !
+	which apt-get >&1 >/dev/null && PACKAGEMODE="apt"
+	which pacman >&1 >/dev/null && PACKAGEMODE="pacman"
     case "$PACKAGEMODE" in
 	apt | deb | debian)
 	   GTK2DEPS="libx11-dev libgtk2.0-dev"
@@ -114,24 +120,65 @@ function SetInstallMode {
 	   INSTALL_CMD="pacman -S --needed"
 	   ;;
     esac
-    if [ "$INSTALL_CMD_1" == "" ]; then
-	echo "Need to specify a package manager, exiting ...."
+    if [ "$INSTALL_CMD" == "" ]; then
+	echo "Cannot identify Package Manager, exiting ...."
 	ShowHelp
     fi
-    echo "install mode set"
+    echo "INSTALL_CMD set to $INSTALL_CMD"
 }
-
 
 # ----------- OK, it starts here -----------
 
+
+
+while getopts "Ii:drp:w:f:mh" opt; do
+    case $opt in
+		i) LAZROOTDIR="$OPTARG"       # User specified install dir
+			;;
+		I) LAZROOTDIR="$LAZROOTDIRPI" # Thats a better disk IN MY SYSTEMS, suits only PI    	
+			;;
+		d) DOWNLOAD="true"            # 
+            ;;
+        r) SetInstallMode             # Will set INSTALL_CMD. else its ""
+        	;;
+        w) LAZWIDGET="$OPTARG"        # -w gtk2 | qt5 | qt6
+	        ;;
+	    f) LAZVER="$OPTARG"           # -f 3_6  | -f 4_0_RC_1 | main  but main has different name !
+	        ;;
+	    m) MACOS="true"
+	        ;;
+	h) ShowHelp 
+	   ;;			      # and exit !	
+    esac
+done
+
+CleanLazVersion         # expands tag to filename and download URL
+
+
+
+
+# No, do not do this automatically any more, use -i or -I
+#if [ $(uname -m) == "aarch64" ]; then      # WE assume RasPi, NOT SAFE !
+#    LAZROOTDIR="$HOME/Ext/64bit/Lazarus"   # I do this on a Pi to move disk I/O off the SDCard. 
+#fi
+  
+function FPCInstalled () {
+#   expect eg "3.2.2", maybe 3.2.3 or 3.2.4, the late 2024 early 2025 3.2.4_branch calls itself 3.2.4
+    echo `fpc -iV`
+}
+
+
 FPCFOUND=$(FPCInstalled)
 
-if [ ! "$PACKAGEMODE" == "" ]; then
+# echo "--------- FPCFOUND=$FPCFOUND   INSTALL_CMD=$INSTALL_CMD   LAZROOTDIR=$LAZROOTDIR   LAZWIDGET=$LAZWIDGET"
+# echo "--------- LAZDOWNURL=$LAZDOWNURL    MVLAZDIR=$MVLAZDIR"
+
+if [ ! "$INSTALL_CMD" == "" ]; then
     if [ "MACOS" == "true" ]; then
         echo " Sorry, Mac dependencies are your problem, -m means Mac. Exiting"
         ShowHelp
     fi
-    SetInstallMode		# does not return if not set properly
+#    SetInstallMode		# does not return if not set properly
     case "$LAZWIDGET" in
     gtk2)
 	    CMD_LINE="sudo $INSTALL_CMD $GTK2DEPS"
@@ -143,7 +190,7 @@ if [ ! "$PACKAGEMODE" == "" ]; then
 	    CMD_LINE="sudo $INSTALL_CMD $QT6DEPS"
 	    ;;
     esac
-    echo "root required to run \"$CMD_LINE\""
+    echo "WARNING : root required to run \"$CMD_LINE\""
     $CMD_LINE
     if [ ! "$?" == "0" ]; then
         echo "========================================="
@@ -153,7 +200,7 @@ if [ ! "$PACKAGEMODE" == "" ]; then
     fi
     echo "deps resolved"
 else
-    echo "===== Assuming Dependencies are OK"
+    echo "===== Assuming Dependencies are OK, try again with -r if you want them resolved."
 fi
 
 if [ "$FPCVER" != "$FPCFOUND" ]; then
@@ -165,7 +212,9 @@ if [ "$FPCVER" != "$FPCFOUND" ]; then
     fi
 fi    
 
-echo "----- OK, we have FPC $FPCVER"
+echo "----- OK, we have FPC $FPCVER in PATH"
+
+# --------- Lazarus Config Dir -------------
 
 if [ ! -d "$LAZROOTDIR/LazConfigs" ]; then
     echo "----- Creating Config Dir $LAZROOTDIR/LazConfig"
@@ -182,16 +231,16 @@ if [ ! -e "$LAZZIPPATH"/"$LAZZIPNAME" ]; then
     if [ ! -e "$HOME/Downloads/""$LAZZIPNAME" ]; then     # sad, its not there
         echo "----- Lazarus file not present at $HOME/Downloads/""$LAZZIPNAME"
 	if [ "$DOWNLOAD" == "true" ]; then
-	    echo "----- We will try to download $LAZDOWNLOAD"
+	    echo "----- We will try to download $LAZDOWNURL"
             cd "$HOME/Downloads"
-            wget "$LAZDOWNLOAD"
+            wget "$LAZDOWNURL"
             if [ ! -e "$HOME/Downloads/""$LAZZIPNAME" ]; then     # still not there ?
-               echo "Sorry, cannot download $LAZDOWNLOAD"
+               echo "Sorry, cannot download $LAZDOWNURL"
                echo "Downloading Disabled"
                exit
 	    fi
 	else 
-	    echo "----- Please put Lazarus downloaded zip file in Downloads or use -d"
+	    echo "----- Please put $LAZZIPNAME file in Downloads or use -d"
 	    exit
 	fi
     fi
@@ -206,6 +255,8 @@ if [ -d "$LAZROOTDIR""/LazConfigs/""$LAZFINALNAME" ]; then
 fi
 
 echo "----- Changing to $LAZROOTDIR to unzip $LAZZIPPATH/$LAZZIPNAME"
+echo "----- Will install into $LAZROOTDIR/$LAZFINALNAME"
+
 cd "$LAZROOTDIR"
 
 if [ -d "$LAZFINALNAME" ]; then
@@ -213,11 +264,22 @@ if [ -d "$LAZFINALNAME" ]; then
         echo "ERROR !!! LAZFINALNAME is empty and I was about to rm -Rf it !"
         exit
     fi
-    echo "----- OK, removing existing Lazarus install"
+    echo "----- OK, will remove existing Lazarus install in $LAZROOTDIR/$LAZFINALNAME"
+ 	read -p "Do you wish to proceed ? y/n ?" yesno
+    if [ ! "$yesno" == "y" ]; then 
+    	echo "Exiting at your request"
+    	exit
+    fi   
     rm -Rf "$LAZFINALNAME"
 fi
+
+
 unzip -q "$LAZZIPPATH/""$LAZZIPNAME"
-mv `basename -s .zip "$LAZZIPNAME"` "$LAZFINALNAME"
+
+if [ "$MVLAZDIR" == "true" ]; then             # An ugly lazarus-lazarus name issue
+	# echo "===== Going to mv from $LAZZIPNAME to $LAZFINALNAME (less the .zip)"
+	mv `basename -s .zip "$LAZZIPNAME"` "$LAZFINALNAME"       # with main or fixes not needed
+fi
 
 cd "$LAZFINALNAME"
 
@@ -281,13 +343,17 @@ if [ "$MACOS" == "false" ]; then            # This block all about .desktop file
 	chmod u+x "$DESKTOPDIR/lazarus.desktop"
 	echo "----- Generated a new desktop file"
     fi
-fi                 # end of if MACOS
+fi                 # end of if NOT MACOS
 
 
 echo "----- Building in $LAZROOTDIR/$LAZFINALNAME, FPCVER is $FPCVER, $LAZWIDGET"
 echo "===== This will take a few minutes ...."
 
-make "clean" "LCL_PLATFORM=$LAZWIDGET" "bigide" > build.log
+#if [ "$LAZDEBUG" == "true" ]; then          # Lazarus is built debug mode by default
+#	make "DEBUG=1" "clean" "LCL_PLATFORM=$LAZWIDGET" "bigide" > build.log
+#else
+	make "clean" "LCL_PLATFORM=$LAZWIDGET" "bigide" > build.log
+#fi
 
 tail build.log
 echo "----------------------------------------------------------"

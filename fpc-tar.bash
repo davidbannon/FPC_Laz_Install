@@ -10,7 +10,7 @@
 #    The tarball and source code it manipulates are covered by the FPC/Lazarus licenses.
 
 
-# A script to 'install' a premade tarball containing a fpc copiler and src
+# A script to 'install' a premade tarball containing a fpc compiler and src
 # It can install dependencies, append a path to your .bashrc, create .fpc.cfg
 # To make initial tarball, on system with working install, do from $HOME, eg
 # $> tar czf fpc-324rc1.tgz bin/FPC/SRC/source-release_3_2_4-branch/ bin/FPC/fpc-3.2.4
@@ -31,7 +31,7 @@ FPCHOME="$HOME""/bin/FPC"   # Where I keep multiple copies of FPC
 ARMHOME="NOTSET"            # Arm only and required there, to allow an install on faster disk
 ARMSYS="NO"
 FPCDIR="fpc-3.2.4"          # default below FPCHOME
-PACKAGEMODE="unset"
+# PACKAGEMODE="unset"
 APPENDPATH="no"
 INSTALL_CMD=""
 CPU=""
@@ -42,13 +42,14 @@ function ShowHelp {
 	echo "----- Showing Help"
 	echo "Install FPC from MY tarball ! Danger, experimental !"
 	echo "Expects to find $TARBALL in current directory or ~/Downloads"
-	echo "   -p MOD   Resolve dependencies, packaging model = apt, rpm, pacman"
+	echo "   -r       Resolve dependencies if it can"
 	echo "   -f TAG   FPC version tag, default 324rc1, also eg 3.2.0, 322, 3.2.4rc1"
 	echo "   -i path  Path to Install into, required on arm, ignored elsewhere"
 	echo "   -a       Append lines to .bashrc to add this to PATH, cumulative !"
+	echo "   -d       Apply Defaults, do dependencies, add PATH to .bashrc"
 	echo "   -h       This help page"
 	echo "eg \$> bash ./fpc-tar.bash -p apt -f 3.2.4rc1 -a"
-	echo "   \$> bash ./fpc-tar.bash -p apt -i \$HOME/bin/FPC"
+	echo "   \$> bash ./fpc-tar.bash -p -i \$HOME/bin/FPC"
 	exit;
 }
 
@@ -69,7 +70,7 @@ function GetCPU {
             TARGET="i386-linux"
             CPUTAG="_32"          # thats, eg, between "fpc-3-2-2" and ".tgz"
         ;;
-        "aarch64")                # 64bit RasPi (note - not tested with Apple Silicon)
+        "aarch64")                # 64bit RasPi (note - not tested with Apple M(x))
             COMPILER="ppca64"
             # BASEDIR="$HOME/Ext/64bit/FPC"  # this is on a USB key to get i/o stuff off SDCard
             TARGET="aarch64-linux"           # check this Davo
@@ -110,19 +111,12 @@ function GetTarBallPath {
 }
 
 function SetInstallMode {
-    case "$PACKAGEMODE" in
-        apt | deb | debian)
-           INSTALL_CMD="apt install"
-           ;;
-        rpm | dnf)
-           INSTALL_CMD="dnf install"
-           ;;
-         pacman| pac | arch)
-           INSTALL_CMD="pacman -S --needed"
-           ;;
-    esac
+
+	which dnf >&1 >/dev/null && INSTALL_CMD="dnf install"
+	which apt-get >&1 >/dev/null && INSTALL_CMD="apt install "
+	which pacman >&1 >/dev/null && INSTALL_CMD="pacman -S --needed"
     if [ "$INSTALL_CMD" == "" ]; then
-        echo "Need to specify a package manager, exiting ...."
+        echo "Unable to identify Package Manager, exiting ...."
         ShowHelp
     fi
 }
@@ -155,9 +149,9 @@ function CheckUserVer {
 
 GetCPU                          # exits if cannot handle cpu
 
-while getopts "p:at:f:i:h" opt; do
+while getopts "rdat:f:i:h" opt; do
 	case $opt in
-        p) PACKAGEMODE="$OPTARG"       
+    r) SetInstallMode       # will setup INSTALL_CMD if it can
             ;;
 	f) USERVER="$OPTARG"
 		;;
@@ -165,8 +159,10 @@ while getopts "p:at:f:i:h" opt; do
 		;;
 	i) ARMHOME="$OPTARG"
 		;;
-	h) 
-           ShowHelp 
+	d) SetInstallMode
+	   APPENDPATH="yes"
+	   ;;
+	h) ShowHelp 
 	   ;;	   # and exit !
    	\?) echo "Invalid option $OPTARG"
      		ShowHelp
@@ -191,18 +187,20 @@ fi
 
 FPCPATH="$FPCHOME"/"$FPCDIR"    #  full path to dir were this version is put by tar
 
-echo "----- CPU is $CPU and tarball is $TARBALL"
+echo "----- CPU is $CPU and tarball is $TARBALL and INSTALL_CMD is $INSTALL_CMD"
+
+exit
 
 GetTarBallPath			# exits if no tarball found
 echo "----- TARBALL is $TARPATH/$TARBALL"
 echo "----- FPCPATH is $FPCPATH"
 
-if [ "$PACKAGEMODE" == "unset" ]; then
+if [ "$INSTALL_CMD" == "unset" ]; then
         echo "----- Assuming dependencies are OK"
 else
-	SetInstallMode
     	ResolveDepends
 fi
+
 if [ $ARMSYS == "YES" ]; then
     mkdir -p $ARMHOME			# should check that it exists now ...
     cd "$ARMHOME"
