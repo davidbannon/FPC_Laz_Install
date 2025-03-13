@@ -9,7 +9,7 @@ These are some quite idocyntric tools for my own use **on Linux**. But you are w
 
 * Linux i686 - 32bit
 
-* Linux armhf - 32bit (eg Raspberry Pi)
+* Linux armhf - 32bit (eg Raspberry Pi)  (Lazarus build only, not FPC)
 
 * Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)
 
@@ -19,54 +19,90 @@ With what is here, you can install just the compiler you want to use and use it 
 
 
 
+In the Releases section here, right of screen, you will find tar balls for a binary install of FPC (along with source used to build it) -
+
+
+
+
+
+* fpc-3-2-0.tgz  -   FPC 3.2.0 for x86_64
+
+* fpc-3-2-2.tgz  -   FPC 3.2.2 for x86_64
+
+* fpc-3-2-2_32.tgz  -  FPC 3.2.2 for i686, ie 32bit intel
+
+* fpc-3-2-2_armhf.tgz  - FPC 3.2.2 for armhf, ie 32bit Raspberry Pi etc
+
+* fpc-3-2-4rc1.tgz  -  FPC 3.2.4-brance for x86_64 (ie, sort of 3.2.4rc1 ?)
+
+* fpc-3-2-4rc1_arm64.tgz  -  FPC 3.2.4rc1 for aarch64, 64bit Raspberry Pi
+
+* fpc-3-2-4rc1_armhf.tgz  -  FPC 3.2.4rc1 for armhf, 32bit Raspberry Pi
+
+
+
+* scripts.zip -   a small zip containg the two scripts described below.
+
+
+
+Note : both scripts respond to -h with a short held screen.
+
+
+
 **Quick Start FPC**
 --------
-(eg x86_64) Download from Releases eg  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. Type (In that directory, replace 'deb' with 'rpm' or 'pac' depending on your package manager) -
+(eg x86_64) Download from Releases (my recommendation at the moment)  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. eg
 
-    >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb <enter>
-You will be asked to give the root password to install necessary dependencies and advised to run -
+    $> cd ~/Downloads
+    $> wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/scripts.zip
+    $> unzip scripts.zip
+    $> wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
 
-    >$ source ~/.bashrc <enter>
+
+Type  (-f says use 324rc1 file; -d do defaults, -a append path to .rcbash; -r says resolve dependencies) -
+
+    $> bash ./fpc-tar.bash -f 324rc1 -a -r <enter>
+You will be asked to give the root password to install necessary dependencies and then advised to run -
+
+    $> source ~/.bashrc <enter>
 to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
 
-A sequence of commands, useful for copy and paste, might be (on a deb x86_64 system) -
 
-    >$ cd ~/Downloads
-    >$ wget https://raw.githubusercontent.com/davidbannon/FPC_Laz_Install/refs/heads/main/fpc-tar.bash
-    >$ wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
-    >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb
-    ....
-    >$ source ~/.bashrc
+
 
 
 **ARM ?** because, on ARM, I usually install the compiler and Lazarus on a seperate disk to avoid problems with the SDCard, on arm, you MUST specify where to install to with the -i option. For example, if you are happy putting the compiler in $HOME/bin (ie on the SDCard) use, perhaps -
 
 
 
-    >$ bash ./fpc-tar.bash -f 324rc1 -a -p deb -i $HOME/bin/FPC<enter>
+    $> bash ./fpc-tar.bash -f 324rc1 -a -r -i $HOME/bin/FPC<enter>
+
+
+note : while there are tarballs for armhf the script will not, yet install them. In my my case, when I run a 32bit Arm OS its on 64bit hardware and my script does not understand. But untaring it all into an appropropiate place manually is not that hard,
+
 
 
 
 
 **Quick Start Lazarus**
 --------
-If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (possibly) download, compile and configure Lazarus. -
+If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (if necessary) download, compile and configure Lazarus. -
 
->$  `bash ./make-lazarus.bash -p rpm -f 3_6  -d <enter>`
+>$  `bash ./make-lazarus.bash -r -f 3_8  -d <enter>`
 
-In this example, we assume the system is rpm based, perhaps Fedora etc, again, alternatives are 'deb' and 'pac' depending on your system. Again, you will have to give the root password to install dependencies.
+In this example, we use -r to resolve dependencies, -f 3_8 to request Lazarus rlease 3.8, -d telling the script to download Lazarus Source from the official gitlab repository. Again, you will have to give the root password to install dependencies.
 
 In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
 
 
-If you already have the Lazarus source downloaded, if it is in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
+If you already have the Lazarus source downloaded, as a zip file, if it is in your Downloads directory, the script will find and use it. Start Lazarus from your menu or use the script, $HOME/bin/lazarus.bash
 
 
 
 **Generally**
 --------
-In both cases, if you know the dependencies are OK, leave out the -p and its parameter. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script.
+In both cases, if you know the dependencies are OK, leave out the -r. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script.
 
 
 
@@ -119,10 +155,10 @@ Then run it eg (assuming you are on a deb based system and have the fpc-3-2-4rc1
 
 
 
-    $> bash ./fpc-tar.bash -f 324rc1 -a -p deb <enter>
+    $> bash ./fpc-tar.bash -f 324rc1 -a -r <enter>
 
 
-Because you provided **-p deb** it will try to resolve the FPC dependencies, use 'deb' for Debian, Ubuntu and derivatives, 'rpm' for Fedora, Mageia and similar, 'pac' for Arch systems. You will be asked for the root password to install those dependencies. If you know dependencies are OK (perhaps you have another FPC install?), leave this section out.
+Because you provided **-p deb** it will try to resolve the FPC dependencies, works with Debian, RPM or pacman systems. You will be asked for the root password to install those dependencies. If you know dependencies are OK (perhaps you have another FPC install?), leave this section out.
 
 
 
@@ -177,18 +213,18 @@ then run it, eg, assuming, this time, you are on a rpm based system and want to 
 
 
 
-    $> bash ./make-lazarus.bas -p rpm -f 3_6  -d <enter>
+    $> bash ./make-lazarus.bas -p rpm -f 3_8  -d <enter>
 
 
-Again, **-p rpm** indicates you want dependencies resolved and your package manager is rpm based. Again, you will be asked for the root password to install those dependencies.
-
-
-
-**-f 3_6** says look for the Lazarus download, lazarus-lazarus_3_6.zip (that how it comes from gitlab). If its in the current working directory or in your ~/Downloads directory, off we go !
+Again, **-r** says you want dependencies resolve. Again, you will be asked for the root password to install those dependencies.
 
 
 
-The **-d** says, if the above step did not find a previously downloaded file, go and get it. Its stays in the current directory so you can reuse it if you wan to run this installer again.
+**-f 3_6** says look for the Lazarus download, lazarus-lazarus_3_6.zip (that how it comes from gitlab). If its in the current working directory or in your ~/Downloads directory, off we go !  You can ask for Lazarus '3_6', '3_8',  'main' or 'fixes_4', that are git tag or branch names.
+
+
+
+The **-d** says, if the above step did not find a previously downloaded file, go and get it. Its stays in the current directory so you can reuse it if you wan to run this installer again. The downloaded file must be in zip format and, if necessary, is downloaded from the official FPC/Website.
 
 
 
@@ -226,7 +262,7 @@ You can install as many different versions of Lazarus as you like this way, each
 
 
 
-
+**PCLinuxOS** - no, it will not work ! The poor OS does not know if its debian or rpm based.
 
 
 
