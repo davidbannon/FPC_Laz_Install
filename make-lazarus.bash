@@ -25,16 +25,16 @@ set -e
 # NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
 # David Bannon - 2025-03-06
-LAZVER="3_8"		    # as it appears in file names, this is default !
+LAZVER="4_0"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
 LAZWIDGET="gtk2"        # Use -w to set QT5 or QT6
 # LAZDEBUG=""             # Has true if we want to build a debug version of Lazarus (its the default !)
-FPCVER="3.2.2"          # Now, is not acceptable, so 324 only at present
-FPCVER2="3.2.4"         # right now, thats all we accept, can do better.
+FPCVER="3.2.2"          # March 2025, 3.2.2 will work but I recommend 3.2.4
+FPCVER2="3.2.4"         # This is the 3.2.4-branch, when released will have same tag.
 LAZROOTDIR="$HOME/bin/Lazarus"             # Will have to override if, eg, RasPi
-LAZROOTDIRPI="$HOME/Ext/64bit/Lazarus"     # Alt, better disk location for RasPi on my system
+LAZROOTDIRPI="$HOME/Ext/64bit/Lazarus"     # Alt, better disk location for RasPi on _my_ system
 MACOS="false"                              # Has not been tested for awhile !
 DOWNLOAD="false"        # If true, will try and get indicated Lazarus from gitlab if necessary
 MVLAZDIR="false"        # True is we need to fix a lazarus-lazarus situation ! (Tag only ?)
@@ -85,19 +85,23 @@ function ShowHelp {
 	echo "   -r        Resolve dependencies if necessary"
 #	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
 	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
-	echo "   -f rel    Lazarus Release, tag from file name, defaults to 3_8"
-	echo "             can be any one of main; fixes_4; lazarus-lazarus_* = [3_6, 3_8, 4_0_RC_1, 4_0RC2]"
+	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_0, can be -"
+	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
+	echo "               main, 3_6, 3_8, 4_0"
+	echo "   -v rel    Same as above."
 	echo "   -i dir    Install dir, default $HOME/bin/Lazarus but on a Pi maybe move to better disk" 
 	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!   
 	echo "   -m        Its a Mac"
 #	echo "   -D        Make a Debug version of Lazarus"    # default build of Lazarus is DEBUG
 	echo "   -h        This help page"
-	echo "If using -p, its a good idea to ensure your package manager is up todate."
+	echo "If using -r, its a good idea to ensure your package manager is up todate."
+	echo "Makes a lazarus.cfg which defines where your lazarus config is kept."
+	echo "Looks for a downloaded lazarus zipball in first current dir, then ~/Downloads"
 	exit;
 }
 
 function SetInstallMode {
-	which dnf >&1 >/dev/null && PACKAGEMODE="dnf"     # PACKAGEMODE is a local variable !
+	which dnf >&1 >/dev/null && PACKAGEMODE="dnf"     # PACKAGEMODE is a "local variable" !
 	which apt-get >&1 >/dev/null && PACKAGEMODE="apt"
 	which pacman >&1 >/dev/null && PACKAGEMODE="pacman"
     case "$PACKAGEMODE" in
@@ -115,7 +119,7 @@ function SetInstallMode {
 	   ;;
 	 pacman| pac | arch)
 	   QT5DEPS="qt5pas"             # yes, Nov 2024, repo version is current
-	   QT6DEPS="qt6pas"             # no, Nov, 2024, repo version one rev beehind, maybe OK ?
+	   QT6DEPS="qt6pas"             # no, Nov, 2024, repo version one rev behind, maybe OK ?
 	   GTK2DEPS="gtk2 libx11"       # no -dev packages in Arch !
 	   INSTALL_CMD="pacman -S --needed"
 	   ;;
@@ -131,7 +135,7 @@ function SetInstallMode {
 
 
 
-while getopts "Ii:drp:w:f:mh" opt; do
+while getopts "Ii:drp:w:f:v:mh" opt; do
     case $opt in
 		i) LAZROOTDIR="$OPTARG"       # User specified install dir
 			;;
@@ -143,7 +147,7 @@ while getopts "Ii:drp:w:f:mh" opt; do
         	;;
         w) LAZWIDGET="$OPTARG"        # -w gtk2 | qt5 | qt6
 	        ;;
-	    f) LAZVER="$OPTARG"           # -f 3_6  | -f 4_0_RC_1 | main  but main has different name !
+	    f|v) LAZVER="$OPTARG"         # -f 3_6  | -f 4_0_RC_1 | main  
 	        ;;
 	    m) MACOS="true"
 	        ;;
@@ -153,9 +157,6 @@ while getopts "Ii:drp:w:f:mh" opt; do
 done
 
 CleanLazVersion         # expands tag to filename and download URL
-
-
-
 
 # No, do not do this automatically any more, use -i or -I
 #if [ $(uname -m) == "aarch64" ]; then      # WE assume RasPi, NOT SAFE !
@@ -203,9 +204,9 @@ else
     echo "===== Assuming Dependencies are OK, try again with -r if you want them resolved."
 fi
 
-if [ "$FPCVER" != "$FPCFOUND" ]; then
-    if [ "$FPCVER2" != "$FPCFOUND" ]; then
-        echo "===== SORRY, no suitable FPC found, exiting"
+if [ "$FPCVER" != "$FPCFOUND" ]; then           # OK, not our first choice
+    if [ "$FPCVER2" != "$FPCFOUND" ]; then      # and not our second (actually prefered) choice.
+        echo "===== SORRY, no suitable FPC found, exiting (found = $FPCFOUND )"
         exit;
     else
         FPCVER="$FPCVER2"
@@ -228,7 +229,7 @@ fi
 echo "----- OK, we have a config dir $LAZROOTDIR/LazConfigs"
 
 if [ ! -e "$LAZZIPPATH"/"$LAZZIPNAME" ]; then
-    if [ ! -e "$HOME/Downloads/""$LAZZIPNAME" ]; then     # sad, its not there
+    if [ ! -e "$HOME/Downloads/""$LAZZIPNAME" ]; then     # sad, its not there either
         echo "----- Lazarus file not present at $HOME/Downloads/""$LAZZIPNAME"
 	if [ "$DOWNLOAD" == "true" ]; then
 	    echo "----- We will try to download $LAZDOWNURL"
@@ -315,7 +316,7 @@ if [ "$MACOS" == "false" ]; then            # This block all about .desktop file
 
     read -p "Create a script to start Lazarus with right PATH y/n ?" yesno
     if [ "$yesno" == "y" ]; then
-	echo "----- Creating $HOMEE/bin/lazarus.bash"
+	echo "----- Creating $HOME/bin/lazarus.bash"
         echo "#!/usr/bin/bash"    > $HOME/bin/lazarus.bash
 	echo "export PATH=$PATH" >> $HOME/bin/lazarus.bash    # we use existing command line path
 	echo "export QT_QPA_PLATFORM=xcb" >> $HOME/bin/lazarus.bash

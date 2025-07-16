@@ -5,13 +5,13 @@ FPC-Lazarus Installer
 
 These are some quite idocyntric tools for my own use **on Linux**. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good. Supported, in one way or another is
 
-* Linux x86_64 - 64bit
+   * Linux x86_64 - 64bit
 
-* Linux i686 - 32bit
+   * Linux i686 - 32bit
 
-* Linux armhf - 32bit (eg Raspberry Pi)  (Lazarus build only, not FPC)
+   * Linux armhf - 32bit (eg Raspberry Pi)  (Lazarus build only, not FPC)
 
-* Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)
+   * Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)
 
 
 
@@ -25,23 +25,23 @@ In the Releases section here, right of screen, you will find tar balls for a bin
 
 
 
-* fpc-3-2-0.tgz  -   FPC 3.2.0 for x86_64
+   * fpc-3-2-0.tgz  -   FPC 3.2.0 for x86_64
 
-* fpc-3-2-2.tgz  -   FPC 3.2.2 for x86_64
+   * fpc-3-2-2.tgz  -   FPC 3.2.2 for x86_64
 
-* fpc-3-2-2_32.tgz  -  FPC 3.2.2 for i686, ie 32bit intel
+   * fpc-3-2-2_32.tgz  -  FPC 3.2.2 for i686, ie 32bit intel
 
-* fpc-3-2-2_armhf.tgz  - FPC 3.2.2 for armhf, ie 32bit Raspberry Pi etc
+   * fpc-3-2-2_armhf.tgz  - FPC 3.2.2 for armhf, ie 32bit Raspberry Pi etc
 
-* fpc-3-2-4rc1.tgz  -  FPC 3.2.4-brance for x86_64 (ie, sort of 3.2.4rc1 ?)
+   * fpc-3-2-4rc1.tgz  -  FPC 3.2.4-brance for x86_64 (ie, sort of 3.2.4rc1 ?)
 
-* fpc-3-2-4rc1_arm64.tgz  -  FPC 3.2.4rc1 for aarch64, 64bit Raspberry Pi
+   * fpc-3-2-4rc1_arm64.tgz  -  FPC 3.2.4rc1 for aarch64, 64bit Raspberry Pi
 
-* fpc-3-2-4rc1_armhf.tgz  -  FPC 3.2.4rc1 for armhf, 32bit Raspberry Pi
+   * fpc-3-2-4rc1_armhf.tgz  -  FPC 3.2.4rc1 for armhf, 32bit Raspberry Pi
 
 
 
-* scripts.zip -   a small zip containg the two scripts described below.
+   * scripts.zip -   a small zip containg the two scripts described below.
 
 
 
@@ -51,11 +51,10 @@ Note : both scripts respond to -h with a short held screen.
 
 **Quick Start FPC**
 --------
-(eg x86_64) Download from Releases (my recommendation at the moment)  fpc-3-2-4rc1.tgz file and the scripts.zip. Unzip the scripts (not the tgz) all into your Downloads directory. eg
+(eg x86_64) Download the script and, from Releases (my recommendation at the moment)  fpc-3-2-4rc1.tgz file.
 
     $> cd ~/Downloads
-    $> wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/scripts.zip
-    $> unzip scripts.zip
+    $> wget https://raw.githubusercontent.com/davidbannon/FPC_Laz_Install/refs/heads/main/fpc-tar.bash
     $> wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
 
 
@@ -88,9 +87,12 @@ note : while there are tarballs for armhf the script will not, yet install them.
 --------
 If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (if necessary) download, compile and configure Lazarus. -
 
->$  `bash ./make-lazarus.bash -r -f 3_8  -d <enter>`
+    >$ cd ~/Downloads
+>$ `wget https://github.com/davidbannon/FPC_Laz_Install/raw/refs/heads/main/make-lazarus.bash`
 
-In this example, we use -r to resolve dependencies, -f 3_8 to request Lazarus rlease 3.8, -d telling the script to download Lazarus Source from the official gitlab repository. Again, you will have to give the root password to install dependencies.
+>$  `bash ./make-lazarus.bash -r -f 4_0  -d <enter>`
+
+In this example, we use -r to resolve dependencies, -f 4_0 to request Lazarus rlease 4_0, -d telling the script to download Lazarus source if necessary. Source from the official gitlab repository. Again, you will have to give the root password to install dependencies.
 
 In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
@@ -110,7 +112,7 @@ Both scripts have some basic help, use -h .
 
 
 
-Both scripts will do some default action with no options, it might be right for you, possibly not.
+Both scripts will do some default action with no options, it might be right for you, possibly not. Better check with -h first!
 
 
 
@@ -228,7 +230,7 @@ The **-d** says, if the above step did not find a previously downloaded file, go
 
 
 
-By default, a gtk2 version of Lazarus is made, "**-w qt5**" will make Qt5 one, recent systems make even make a Qt6 one **"-w qt6**".
+By default, a gtk2 version of Lazarus is made, "**-w qt5**" will make Qt5 one, recent systems make even make a Qt6 one **"-w qt6**". Note, the script does NOT check that your libq5Pas is usable (ToDo : Why not Davo ?).
 
 
 
@@ -254,7 +256,7 @@ You can install as many different versions of Lazarus as you like this way, each
 
 
 
-**Mageia** - strange package names. Requires lib64x11-devel. Does not have Qt6, its repo Qt5Pas is way out of date.  Manually install libQt5Pas-dev before running the make-lazarus script and run it without the -p. Or just make the gtk2 version.
+**Mageia** - strange package names. Requires lib64x11-devel. Does not have Qt6, its repo Qt5Pas is way out of date.  Manually install libQt5Pas-dev before running the make-lazarus script and run it without the -p. Or just make the gtk2 version. (ToDo : should include up to date libqt5Pas in the Lazarus install script ?)
 
 
 
