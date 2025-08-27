@@ -47,7 +47,7 @@ INSTALL_CMD=""      # is set to distro install command if user sets -r
 function CleanLazVersion {
 	#echo "in CleanLazVersion LAZVER = $LAZVER"
 	case "$LAZVER" in
-		3_6 | 3_8 | 4_0)    # Tags. OK, the 4_0 is a guess !
+		3_6 | 3_8 | 4_0 | 4_2)    # Tags.  !
 			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
 			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
 			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
@@ -87,7 +87,7 @@ function ShowHelp {
 	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
 	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_0, can be -"
 	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
-	echo "               main, 3_6, 3_8, 4_0"
+	echo "               main, 3_6, 3_8, 4_0, 4_2"
 	echo "   -v rel    Same as above."
 	echo "   -i dir    Install dir, default $HOME/bin/Lazarus but on a Pi maybe move to better disk" 
 	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!   

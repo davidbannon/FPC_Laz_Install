@@ -4,6 +4,8 @@
   
 <text xml:space="preserve"><note-content version="0.1"><underline>FPC-Lazarus Installer</underline>
 
+<bold>New</bold> : a script to build  a FPC to suit the ESP32c3 embeded controller modual, see below.
+
 These are some quite idocyntric tools for my own use <bold>on Linux</bold>. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good. Supported, in one way or another is
 <list><list-item dir="ltr"><list><list-item dir="ltr">Linux x86_64 - 64bit</list-item></list></list-item></list>
 <list><list-item dir="ltr"><list><list-item dir="ltr">Linux i686 - 32bit</list-item></list></list-item></list>
@@ -143,16 +145,21 @@ You can install as many different versions of Lazarus as you like this way, each
 
 <bold>PCLinuxOS</bold> - no, it will not work ! The poor OS does not know if its debian or rpm based.
 
+<size:huge><bold>Espressif ESP32c3 modual</bold></size:huge>
+
+FPC can make code for this RISC based chip, instruction on the Lazarus Wiki under https://wiki.freepascal.org/Xtensa
+But a few tips, its use is, in princple, same as the other FPC script here, you download a zip of the source and leave it in $HOME/Downloads.  No command options this time, you want to change things, edit the script. The script does NOT support working from a git source respository but could easily be edited to do so. Its made for me but you are more than welcome t use it.
+
 
 </note-content></text>
-  <last-change-date>2025-07-16T13:11:57.0084929+10:00</last-change-date>
-  <last-metadata-change-date>2025-07-16T13:11:57.0084929+10:00</last-metadata-change-date>
+  <last-change-date>2025-08-27T21:19:29.1203739+10:00</last-change-date>
+  <last-metadata-change-date>2025-08-27T21:19:29.1203739+10:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>
   <width>1154</width>
   <height>814</height>
-  <x>266</x>
-  <y>85</y>
+  <x>259</x>
+  <y>65</y>
   <open-on-startup>False</open-on-startup>
 </note>
