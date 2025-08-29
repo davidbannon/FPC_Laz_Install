@@ -147,13 +147,13 @@ You can install as many different versions of Lazarus as you like this way, each
 
 <size:huge><bold>Espressif ESP32c3 modual</bold></size:huge>
 
-FPC can make code for this RISC based chip, instruction on the Lazarus Wiki under https://wiki.freepascal.org/Xtensa
-But a few tips, its use is, in princple, same as the other FPC script here, you download a zip of the source and leave it in $HOME/Downloads.  No command options this time, you want to change things, edit the script. The script does NOT support working from a git source respository but could easily be edited to do so. Its made for me but you are more than welcome t use it.
+FPC can make code for this RISC based chip. Download a zip of the FPC main, leave it in Downloads, download the script from here. Change to the directory you want the FPC install (where you have write permission) and run this script. Further instruction may appear on the Lazarus Wiki under https://wiki.freepascal.org/Xtensa.
+The script does not expect command line options and it does NOT support working from a git source respository but could easily be edited to do so. Its made for me but you are more than welcome to use it.
 
 
 </note-content></text>
-  <last-change-date>2025-08-27T21:19:29.1203739+10:00</last-change-date>
-  <last-metadata-change-date>2025-08-27T21:19:29.1203739+10:00</last-metadata-change-date>
+  <last-change-date>2025-08-29T14:28:16.6250673+10:00</last-change-date>
+  <last-metadata-change-date>2025-08-29T14:28:16.6250673+10:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>

@@ -9,6 +9,7 @@ set -e
 
 # David Bannon, 24th August 2024
 
+FPC_DIR=""                  
 FPC_DIR="$HOME/bin/FPC"     # thats were I my my FPC
 FPC_VER="3.3.1"             # thats main at present
 
@@ -16,8 +17,8 @@ FPC_VER="3.3.1"             # thats main at present
 # $PATH, comment out next line. Otherwise set it to where your FPC322 is.
 FPC322_PATH="$HOME/bin/FPC/fpc-3.2.2"
 
-cd "$FPC_DIR"
-                                   # must ask first !
+# cd "$FPC_DIR"
+FPC_DIR=`pwd`
 
 if [ -d "fpc-$FPC_VER" ]; then
 	EXISTING="true";
@@ -39,9 +40,7 @@ if ! [ -x "$(command -v riscv32-esp-elf-as)" ]; then
 	echo "Nope, cannot find riscv32-esp-elf-as, have you installed esp-idf and set PATH ?";
 fi
 
-
-
-
+echo "Installing into $FPC_DIR"
 rm -Rf fpc-"$FPC_VER"              
 rm -Rf source-main
 ls -l

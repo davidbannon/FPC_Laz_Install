@@ -276,9 +276,9 @@ You can install as many different versions of Lazarus as you like this way, each
 ========
 
 
-FPC can make code for this RISC based chip, instruction on the Lazarus Wiki under https://wiki.freepascal.org/Xtensa
+FPC can make code for this RISC based chip. Download a zip of the FPC main, leave it in Downloads, download the script from here. Change to the directory you want the FPC install (where you have write permission) and run this script. Further instruction may appear on the Lazarus Wiki under https://wiki.freepascal.org/Xtensa.
 
-But a few tips, its use is, in princple, same as the other FPC script here, you download a zip of the source and leave it in $HOME/Downloads.  No command options this time, you want to change things, edit the script. The script does NOT support working from a git source respository but could easily be edited to do so. Its made for me but you are more than welcome t use it.
+The script does not expect command line options and it does NOT support working from a git source respository but could easily be edited to do so. Its made for me but you are more than welcome to use it.
 
 
 
