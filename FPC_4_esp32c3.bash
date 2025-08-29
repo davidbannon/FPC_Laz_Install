@@ -7,18 +7,15 @@ set -e
 # You MUST use the appropriate esp-idf tool to setup PATH. ie
 # $> source ~/esp448/esp-idf/export.sh
 
-# David Bannon, 24th August 2024
+# David Bannon, 29th August 2024
 
-FPC_DIR=""                  
-FPC_DIR="$HOME/bin/FPC"     # thats were I my my FPC
+# IMPORTANT ! if your FPC322 is found using $PATH,
+# comment out next line. Otherwise set it to where your FPC322 is.
+FPC322_PATH="$HOME/bin/FPC/fpc-3.2.2"   # Thats where my FPC322 is.
+
 FPC_VER="3.3.1"             # thats main at present
-
-# if your FPC322 is installed in user space and therfore findable using
-# $PATH, comment out next line. Otherwise set it to where your FPC322 is.
-FPC322_PATH="$HOME/bin/FPC/fpc-3.2.2"
-
-# cd "$FPC_DIR"
-FPC_DIR=`pwd`
+FPC_DIR=`pwd`               # we install the new stuff in current dir.
+                            # assume user understands they need wrte permission
 
 if [ -d "fpc-$FPC_VER" ]; then
 	EXISTING="true";
