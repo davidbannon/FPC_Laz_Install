@@ -25,7 +25,7 @@ set -e
 # NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
 # David Bannon - 2025-03-06
-LAZVER="4_0"		    # as it appears in file names, this is default !
+LAZVER="4_2"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
@@ -150,6 +150,7 @@ while getopts "Ii:drp:w:f:v:mh" opt; do
 	    f|v) LAZVER="$OPTARG"         # -f 3_6  | -f 4_0_RC_1 | main  
 	        ;;
 	    m) MACOS="true"
+	    	LAZWIDGET="cocoa"
 	        ;;
 	h) ShowHelp 
 	   ;;			      # and exit !	
