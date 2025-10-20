@@ -33,7 +33,7 @@ ARMSYS="NO"
 FPCDIR="fpc-3.2.4"          # default below FPCHOME
 # PACKAGEMODE="unset"
 APPENDPATH="no"
-INSTALL_CMD=""
+INSTALL_CMD="unset"
 CPU=""
 CPUTAG="NOT SET"            # tag used in file name, empty in 64bit linux, _32 for 32bit
 USERVER="324rc1"            # That is default
@@ -134,7 +134,7 @@ function CheckUserVer {
       	    ;;
 	324rc1 | 3.2.4rc1)
 	    TARBALL="fpc-3-2-4rc1""$CPUTAG"".tgz"
-	    FPCDIR="fpc-3.2.4"
+	    FPCDIR="fpc-3.2.3"
 	    ;;
     esac
     if [ "$TARBALL" == "" ]; then
@@ -189,7 +189,7 @@ FPCPATH="$FPCHOME"/"$FPCDIR"    #  full path to dir were this version is put by 
 
 echo "----- CPU is $CPU and tarball is $TARBALL and INSTALL_CMD is $INSTALL_CMD"
 
-exit
+# exit
 
 GetTarBallPath			# exits if no tarball found
 echo "----- TARBALL is $TARPATH/$TARBALL"

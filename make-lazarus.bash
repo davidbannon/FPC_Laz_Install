@@ -31,8 +31,8 @@ LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
 LAZWIDGET="gtk2"        # Use -w to set QT5 or QT6
 # LAZDEBUG=""             # Has true if we want to build a debug version of Lazarus (its the default !)
-FPCVER="3.2.2"          # March 2025, 3.2.2 will work but I recommend 3.2.4
-FPCVER2="3.2.4"         # This is the 3.2.4-branch, when released will have same tag.
+FPCVER="3.2.2"          # March 2025, 3.2.2 will work but I recommend 3.2.3 / 3.2.4
+FPCVER2="3.2.3"         # This is the 3.2.3-branch, when released will be 3.2.4 
 LAZROOTDIR="$HOME/bin/Lazarus"             # Will have to override if, eg, RasPi
 LAZROOTDIRPI="$HOME/Ext/64bit/Lazarus"     # Alt, better disk location for RasPi on _my_ system
 MACOS="false"                              # Has not been tested for awhile !
@@ -47,7 +47,7 @@ INSTALL_CMD=""      # is set to distro install command if user sets -r
 function CleanLazVersion {
 	#echo "in CleanLazVersion LAZVER = $LAZVER"
 	case "$LAZVER" in
-		3_6 | 3_8 | 4_0 | 4_2)    # Tags.  !
+		3_6 | 3_8 | 4_0 | 4_2)    # Tags. 
 			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
 			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
 			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
@@ -85,7 +85,7 @@ function ShowHelp {
 	echo "   -r        Resolve dependencies if necessary"
 #	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
 	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
-	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_0, can be -"
+	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_2, can be -"
 	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
 	echo "               main, 3_6, 3_8, 4_0, 4_2"
 	echo "   -v rel    Same as above."
