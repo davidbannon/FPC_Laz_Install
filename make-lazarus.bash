@@ -22,10 +22,12 @@ set -e
 # Does not consider FPC-main suitable, use 3.2.4  (Hmm, why ??)
 # Creates a Lazarus Desktop and icon so should appear in your menus. 
 
+# 2026-02-06 - Update to support Lazarus 4.4
+
 # NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
 # David Bannon - 2025-03-06
-LAZVER="4_2"		    # as it appears in file names, this is default !
+LAZVER="4_4"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
@@ -47,7 +49,7 @@ INSTALL_CMD=""      # is set to distro install command if user sets -r
 function CleanLazVersion {
 	#echo "in CleanLazVersion LAZVER = $LAZVER"
 	case "$LAZVER" in
-		3_6 | 3_8 | 4_0 | 4_2)    # Tags. 
+		3_6 | 3_8 | 4_0 | 4_2 | 4_4)    # Tags. 
 			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
 			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
 			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
@@ -85,7 +87,7 @@ function ShowHelp {
 	echo "   -r        Resolve dependencies if necessary"
 #	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
 	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
-	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_2, can be -"
+	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_4, can be -"
 	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
 	echo "               main, 3_6, 3_8, 4_0, 4_2"
 	echo "   -v rel    Same as above."
