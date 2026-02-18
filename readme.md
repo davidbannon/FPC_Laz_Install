@@ -23,7 +23,7 @@ These are some quite idocyntric tools for my own use **on Linux**. But you are w
 
 
 
-With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of **glibc earlier than 2.34** so should be usable on all systems you are likely to come across. Anthing, here, called .tgz is a tarball of an installled FPC.
+With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of **glibc earlier than 2.34** so should be usable on all systems you are likely to come across. Anything, here, called .tgz is a tarball of an installled FPC.
 
 
 
@@ -59,7 +59,7 @@ In the main source repository, you will find several scripts, click and then 'do
 
    * compile\_fpc.bash - a very rough script I use to build the initial tarballs.
 
-   * **fpc-tar.bash** - the script you might use to (possibly) download the appropriate tarball, install it and (possibly) setup your system to use it.
+   * **fpc-tar.bash** - the script you might use to install a previously downoaded tarball and (possibly) setup your system to use it.
 
    * **make-lazarus.bash** - a script to (possibly) download the indicated Lazarus source, (possibly) resolve dependences, build the source and setup your system to use it.
 

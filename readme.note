@@ -14,7 +14,7 @@ These are some quite idocyntric tools for my own use <bold>on Linux</bold>. But 
 <list><list-item dir="ltr"><list><list-item dir="ltr">Linux armhf - 32bit (eg Raspberry Pi)  (Lazarus build only, not FPC)</list-item></list></list-item></list>
 <list><list-item dir="ltr"><list><list-item dir="ltr">Linux ARM64, aarch64 - 64bit (eg Raspberry Pi)</list-item></list></list-item></list>
 
-With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of <bold>glibc earlier than 2.34</bold> so should be usable on all systems you are likely to come across. Anthing, here, called .tgz is a tarball of an installled FPC.
+With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of <bold>glibc earlier than 2.34</bold> so should be usable on all systems you are likely to come across. Anything, here, called .tgz is a tarball of an installled FPC.
 
 In the Releases section here, right of screen, you will find tar balls for a binary install of FPC (along with source files to ignore),
 
@@ -32,7 +32,7 @@ If you like, just download the right tarball and untar it from your home directo
 In the main source repository, you will find several scripts, click and then 'download RAW file'.
 
 <list><list-item dir="ltr"><list><list-item dir="ltr">compile_fpc.bash - a very rough script I use to build the initial tarballs.</list-item></list></list-item></list>
-<list><list-item dir="ltr"><list><list-item dir="ltr"><bold>fpc-tar.bash</bold> - the script you might use to (possibly) download the appropriate tarball, install it and (possibly) setup your system to use it.</list-item></list></list-item></list>
+<list><list-item dir="ltr"><list><list-item dir="ltr"><bold>fpc-tar.bash</bold> - the script you might use to install a previously downoaded tarball and (possibly) setup your system to use it.</list-item></list></list-item></list>
 <list><list-item dir="ltr"><list><list-item dir="ltr"><bold>make-lazarus.bash</bold> - a script to (possibly) download the indicated Lazarus source, (possibly) resolve dependences, build the source and setup your system to use it.</list-item></list></list-item></list>
 
 Both the main scripts will look for the input file (ie FPC tarball or Lazarus Source .zip) in ~/Downloads or dir that the script is started from.   Both scripts respond to -h with a short help screen.
@@ -160,14 +160,14 @@ The script does not expect command line options and it does NOT support working 
 
 
 </note-content></text>
-  <last-change-date>2026-02-18T22:06:32.3150329+11:00</last-change-date>
-  <last-metadata-change-date>2026-02-18T22:06:32.3150329+11:00</last-metadata-change-date>
+  <last-change-date>2026-02-18T22:18:30.0140368+11:00</last-change-date>
+  <last-metadata-change-date>2026-02-18T22:18:30.0140368+11:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>
   <width>1154</width>
   <height>814</height>
-  <x>393</x>
-  <y>95</y>
+  <x>232</x>
+  <y>29</y>
   <open-on-startup>False</open-on-startup>
 </note>
