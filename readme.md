@@ -3,13 +3,17 @@ FPC-Lazarus Installer
 
 
 
+**An easy way to get a working FPC Lazarus on Linux**
+--------
+
+
 **New** : a script to build  a FPC to suit the ESP32c3 embeded controller modual, see below.
 
 
 
 These are some quite idocyntric tools for my own use **on Linux**. But you are welcome to use them, if its eases your journey into the Free Pascal Compiler and Lazarus, that would be good. Supported, in one way or another is
 
-   * Linux x86_64 - 64bit
+   * Linux x86\_64 - 64bit
 
    * Linux i686 - 32bit
 
@@ -19,47 +23,59 @@ These are some quite idocyntric tools for my own use **on Linux**. But you are w
 
 
 
-With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of **glibc earlier than 2.34** so should be usable on all systems you are likely to come across.
+With what is here, you can install just the compiler you want to use and use it to build and setup Lazarus with just two scripts.  Its used, by me, on a variety of distros. And, its very easy to discard when you are done. The tarballs are initially built on systems running a version of **glibc earlier than 2.34** so should be usable on all systems you are likely to come across. Anthing, here, called .tgz is a tarball of an installled FPC.
 
 
 
-In the Releases section here, right of screen, you will find tar balls for a binary install of FPC (along with source used to build it) -
+In the Releases section here, right of screen, you will find tar balls for a binary install of FPC (along with source files to ignore),
 
 
 
+   * fpc-3-2-0.tgz  -   FPC 3.2.0 for x86\_64
 
+   * fpc-3-2-2.tgz  -   FPC 3.2.2 for x86\_64
 
-   * fpc-3-2-0.tgz  -   FPC 3.2.0 for x86_64
+   * fpc-3-2-2\_32.tgz  -  FPC 3.2.2 for i686, ie 32bit intel
 
-   * fpc-3-2-2.tgz  -   FPC 3.2.2 for x86_64
+   * fpc-3-2-2\_armhf.tgz  - FPC 3.2.2 for armhf, ie 32bit Raspberry Pi etc
 
-   * fpc-3-2-2_32.tgz  -  FPC 3.2.2 for i686, ie 32bit intel
+   * fpc-3-2-4rc1.tgz  -  FPC 3.2.4 release candidate 1 for x86\_64
 
-   * fpc-3-2-2_armhf.tgz  - FPC 3.2.2 for armhf, ie 32bit Raspberry Pi etc
+   * fpc-3-2-4rc1\_arm64.tgz  -  FPC 3.2.4 release candidate 1 for aarch64, 64bit Raspberry Pi
 
-   * fpc-3-2-4rc1.tgz  -  FPC 3.2.4-brance for x86_64 (ie, sort of 3.2.4rc1 ?)
+   * fpc-3-2-4rc1\_armhf.tgz  -  FPC 3.2.4 release candidate 1  for armhf, 32bit Raspberry Pi
 
-   * fpc-3-2-4rc1_arm64.tgz  -  FPC 3.2.4rc1 for aarch64, 64bit Raspberry Pi
-
-   * fpc-3-2-4rc1_armhf.tgz  -  FPC 3.2.4rc1 for armhf, 32bit Raspberry Pi
-
-
-
-   * scripts.zip -   a small zip containg the two scripts described below.
+   * Source code (zip) and Source code (tar.gz) should be ignored.
 
 
 
-Note : both scripts respond to -h with a short held screen.
+If you like, just download the right tarball and untar it from your home directory, that wont setup paths or resolve dependencies but will get you going if you have a rough idea of what you are doing. The install script, fpc-tar.bash makes it easy.
+
+
+
+In the main source repository, you will find several scripts, click and then 'download RAW file'.
+
+
+
+   * compile\_fpc.bash - a very rough script I use to build the initial tarballs.
+
+   * **fpc-tar.bash** - the script you might use to (possibly) download the appropriate tarball, install it and (possibly) setup your system to use it.
+
+   * **make-lazarus.bash** - a script to (possibly) download the indicated Lazarus source, (possibly) resolve dependences, build the source and setup your system to use it.
+
+
+
+Both the main scripts will look for the input file (ie FPC tarball or Lazarus Source .zip) in ~/Downloads or dir that the script is started from.   Both scripts respond to -h with a short help screen.
 
 
 
 **Quick Start FPC**
 --------
-(eg x86_64) Download the script and, from Releases (my recommendation at the moment)  fpc-3-2-4rc1.tgz file.
+(eg x86\_64) Download the script and, from Releases (my recommendation at the moment)  fpc-3-2-4rc1.tgz file.
 
     $> cd ~/Downloads
-    $> wget https://raw.githubusercontent.com/davidbannon/FPC_Laz_Install/refs/heads/main/fpc-tar.bash
-    $> wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
+    $> wget https://raw.githubusercontent.com/davidbannon/FPC\_Laz\_Install/refs/heads/main/fpc-tar.bash
+    $> wget https://github.com/davidbannon/FPC\_Laz\_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
 
 
 Type  (-f says use 324rc1 file; -d do defaults, -a append path to .rcbash; -r says resolve dependencies) -
@@ -81,7 +97,7 @@ to set a path to your new compiler. Its in $HOME/bin/FPC/fpc-3.2.4
     $> bash ./fpc-tar.bash -f 324rc1 -a -r -i $HOME/bin/FPC<enter>
 
 
-note : while there are tarballs for armhf the script will not, yet install them. In my my case, when I run a 32bit Arm OS its on 64bit hardware and my script does not understand. But untaring it all into an appropropiate place manually is not that hard,
+note : while there are tarballs for armhf the script will not, yet install them. In my case, when I run a 32bit Arm OS its on 64bit hardware and my script does not understand. But untaring it all into an appropropiate place manually is not that hard,
 
 
 
@@ -89,14 +105,14 @@ note : while there are tarballs for armhf the script will not, yet install them.
 
 **Quick Start Lazarus**
 --------
-If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the second script from scripts.zip to (if necessary) download, compile and configure Lazarus. -
+If you have an appropriate compiler installed, perhaps above, perhaps some other way, you can use the make-lazarus.bash script to (if necessary) download, compile and configure Lazarus. -
 
     >$ cd ~/Downloads
->$ `wget https://github.com/davidbannon/FPC_Laz_Install/raw/refs/heads/main/make-lazarus.bash`
+>$ `wget https://github.com/davidbannon/FPC\_Laz\_Install/raw/refs/heads/main/make-lazarus.bash`
 
->$  `bash ./make-lazarus.bash -r -f 4_0  -d <enter>`
+>$  `bash ./make-lazarus.bash -r -f 4\_4  -d <enter>`
 
-In this example, we use -r to resolve dependencies, -f 4_0 to request Lazarus rlease 4_0, -d telling the script to download Lazarus source if necessary. Source from the official gitlab repository. Again, you will have to give the root password to install dependencies.
+In this example, we use -r to resolve dependencies, -f 4\_4 to request Lazarus release 4\_4, -d telling the script to download Lazarus source if necessary. Source comes from the official gitlab repository. Again, you will have to give the root password to install dependencies.
 
 In the Lazarus install, you can choose Qt5 with -w qt5, newer systems may also handle Qt6 in the same way.
 
@@ -108,7 +124,7 @@ If you already have the Lazarus source downloaded, as a zip file, if it is in yo
 
 **Generally**
 --------
-In both cases, if you know the dependencies are OK, leave out the -r. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script.
+In both cases, if you know the dependencies are OK, leave out the -r. You can install the dependencies yourself before you start, thus avoiding typing in the root password in my script (thats what I would do !).
 
 
 
@@ -138,7 +154,7 @@ Everything ends up in $HOME/bin/FPC or $HOME/bin/Lazarus and is easily deleted w
 
 **Free Pascal Compiler**
 --------
-In the releases section, you will find several FPC<version>.tgz files, I suggest you want fpc-3-2-4rc1.tgz (on x86_64), and a small zip containing two scripts. Download a fpc tarball (do not untar it, the script will do that fo you) and the zip, unzip it and end up with these files -
+In the releases section, you will find several FPC<version>.tgz files, I suggest you want fpc-3-2-4rc1.tgz (on x86\_64), and the two main scripts. Download a fpc tarball (do not untar it, the script will do that for you) and scripts, you might end up with these files -
 
 
 
@@ -150,7 +166,7 @@ make-lazarus.bash - a script install Lazarus, we'll look at this later.
 
 
 
-To "install" FPC, you would do this in the directory with those files. First, look at the options -
+First, look at the options -
 
 
 
@@ -172,7 +188,7 @@ The **-a** says append necessary lines to your .bashrc to set a path to the new 
 
 
 
-The **-f  324rc1** is a reference to the tgz file. If you want FPC 3.2.2 instead, you could use '3.2.2' or '322. FPC 3.2.0 requires 320 or 3.2.0.
+The **-f  324rc1** is a reference to the tgz file. If you want FPC 3.2.2 instead, you could use '3.2.2' or '322'. FPC 3.2.0 requires 320 or 3.2.0.
 
 
 
@@ -215,26 +231,26 @@ Again, look at the options -
     $> bash ./make-lazarus.bash -h <enter>
 
 
-then run it, eg, assuming, this time, you are on a rpm based system and want to use the current lazarus 3.6 -
+then run it, eg, assuming, this time, you are on a rpm based system and want to use the current lazarus 4.4 -
 
 
 
-    $> bash ./make-lazarus.bas -p rpm -f 3_8  -d <enter>
+    $> bash ./make-lazarus.bas -p rpm -f 4\_4  -d <enter>
 
 
 Again, **-r** says you want dependencies resolve. Again, you will be asked for the root password to install those dependencies.
 
 
 
-**-f 3_6** says look for the Lazarus download, lazarus-lazarus_3_6.zip (that how it comes from gitlab). If its in the current working directory or in your ~/Downloads directory, off we go !  You can ask for Lazarus '3_6', '3_8',  'main' or 'fixes_4', that are git tag or branch names.
+**-f 4\_4** says look for the Lazarus download, lazarus-lazarus\_4\_4.zip (that how it comes from gitlab). If its in the current working directory or in your ~/Downloads directory, off we go !  You can ask for Lazarus '3\_6', '3\_8',  'main' or 'fixes\_4, 4\_0, 4\_2, 4\_4', they are git tag or branch names.
 
 
 
-The **-d** says, if the above step did not find a previously downloaded file, go and get it. Its stays in the current directory so you can reuse it if you wan to run this installer again. The downloaded file must be in zip format and, if necessary, is downloaded from the official FPC/Website.
+The **-d** says, if the above step did not find a previously downloaded file, go and get it. Its stays in the current directory so you can reuse it if you wan to run this installer again. The downloaded file must be in zip format and, if necessary, is downloaded from the official FPC/Lazarus repo.
 
 
 
-By default, a gtk2 version of Lazarus is made, "**-w qt5**" will make Qt5 one, recent systems make even make a Qt6 one **"-w qt6**". Note, the script does NOT check that your libq5Pas is usable (ToDo : Why not Davo ?).
+By default, a gtk2 version of Lazarus is made, "**-w qt5**" will make Qt5 one, recent systems even make a Qt6 one **"-w qt6**". Note, the script does NOT check that your libq5Pas is usable (ToDo : Why not Davo ?). Newer systems will be fine but a manual install will be necessary in an older distribution.
 
 
 
@@ -256,7 +272,7 @@ You can install as many different versions of Lazarus as you like this way, each
 --------
 
 
-**Gnome and recent KDE** systems, using Wayland and Qt5 or Qt6 - unless you start Lazarus from the script, ~/bin/lazarus.bash or from the menu (that uses the same script), you will use Wayland and you really don't want to. So, if you have built a Qt5 or Qt6 one on a system that uses Wayland, don't start lazarus directly with the suggested "cd ~/bin/Lazarus/lazarus_3_6; ./lazarus", you will be unhappy with the layout.
+**Gnome and recent KDE** systems, using Wayland and Qt5 or Qt6 - unless you start Lazarus from the script, ~/bin/lazarus.bash or from the menu (that uses the same script), you will use Wayland and you really don't want to. So, if you have built a Qt5 or Qt6 one on a system that uses Wayland, don't start lazarus directly with the suggested "cd ~/bin/Lazarus/lazarus\_3\_6; ./lazarus", you will be unhappy with the layout.
 
 
 
