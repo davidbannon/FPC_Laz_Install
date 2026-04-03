@@ -23,11 +23,12 @@ set -e
 # Creates a Lazarus Desktop and icon so should appear in your menus. 
 
 # 2026-02-06 - Update to support Lazarus 4.4
+# 2026-04-03 - Update to support gtk3, not yet tested rpm or packman systems
 
 # NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
 # David Bannon - 2025-03-06
-LAZVER="4_4"		    # as it appears in file names, this is default !
+LAZVER="4_6"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
@@ -40,7 +41,7 @@ LAZROOTDIRPI="$HOME/Ext/64bit/Lazarus"     # Alt, better disk location for RasPi
 MACOS="false"                              # Has not been tested for awhile !
 DOWNLOAD="false"        # If true, will try and get indicated Lazarus from gitlab if necessary
 MVLAZDIR="false"        # True is we need to fix a lazarus-lazarus situation ! (Tag only ?)
-LAZZIPPATH=`pwd`        # we look for a zip fime in current dir, failing that, in ~/Downloads
+LAZZIPPATH=`pwd`        # we look for a zip file in current dir, failing that, in ~/Downloads
 
 INSTALL_CMD=""      # is set to distro install command if user sets -r
 
@@ -49,7 +50,7 @@ INSTALL_CMD=""      # is set to distro install command if user sets -r
 function CleanLazVersion {
 	#echo "in CleanLazVersion LAZVER = $LAZVER"
 	case "$LAZVER" in
-		3_6 | 3_8 | 4_0 | 4_2 | 4_4)    # Tags. 
+		3_6 | 3_8 | 4_0 | 4_2 | 4_4 | 4_6 )    # Tags. 
 			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
 			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
 			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
@@ -86,13 +87,14 @@ function ShowHelp {
 	echo "   -d        Download the Lazarus file if necessary."
 	echo "   -r        Resolve dependencies if necessary"
 #	echo "   -p        Install dependencies from package manager = deb, rpm, pac"
-	echo "   -w widget Lazarus Widget, gtk2, qt5, qt6"
-	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_4, can be -"
+	echo "   -w widget Lazarus Widget, gtk2, gtk3, qt5, qt6"
+	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_6, can be -"
 	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
-	echo "               main, 3_6, 3_8, 4_0, 4_2"
+	echo "               main, fixes_4, 3_6, 3_8, 4_0, 4_2, 4_4, 4_6"
 	echo "   -v rel    Same as above."
 	echo "   -i dir    Install dir, default $HOME/bin/Lazarus but on a Pi maybe move to better disk" 
-	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!   
+	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!  
+	echo "   -u        Run a useride make to restore an existing config"
 	echo "   -m        Its a Mac"
 #	echo "   -D        Make a Debug version of Lazarus"    # default build of Lazarus is DEBUG
 	echo "   -h        This help page"
@@ -109,6 +111,7 @@ function SetInstallMode {
     case "$PACKAGEMODE" in
 	apt | deb | debian)
 	   GTK2DEPS="libx11-dev libgtk2.0-dev"
+	   GTK3DEPS="libgtk-3-dev"
 	   QT5DEPS="libqt5pas-dev"
 	   QT6DEPS="libqt6pas-dev"
 	   INSTALL_CMD="apt install" 
@@ -117,12 +120,14 @@ function SetInstallMode {
 	   QT5DEPS="qt5pas-devel"
 	   QT6DEPS="qt6pas-devel"
 	   GTK2DEPS="libX11-devel gtk2-devel"
+	   GTK3DEPS="gtk3-devel"                 # untested !
 	   INSTALL_CMD="dnf install" 
 	   ;;
 	 pacman| pac | arch)
 	   QT5DEPS="qt5pas"             # yes, Nov 2024, repo version is current
 	   QT6DEPS="qt6pas"             # no, Nov, 2024, repo version one rev behind, maybe OK ?
 	   GTK2DEPS="gtk2 libx11"       # no -dev packages in Arch !
+	   GTK3DEPS="gtk3"              # Untested
 	   INSTALL_CMD="pacman -S --needed"
 	   ;;
     esac
@@ -137,7 +142,7 @@ function SetInstallMode {
 
 
 
-while getopts "Ii:drp:w:f:v:mh" opt; do
+while getopts "Ii:drp:w:f:v:mhu" opt; do
     case $opt in
 		i) LAZROOTDIR="$OPTARG"       # User specified install dir
 			;;
@@ -147,10 +152,12 @@ while getopts "Ii:drp:w:f:v:mh" opt; do
             ;;
         r) SetInstallMode             # Will set INSTALL_CMD. else its ""
         	;;
-        w) LAZWIDGET="$OPTARG"        # -w gtk2 | qt5 | qt6
+        w) LAZWIDGET="$OPTARG"        # -w gtk2 | gtk3 | qt5 | qt6
 	        ;;
 	    f|v) LAZVER="$OPTARG"         # -f 3_6  | -f 4_0_RC_1 | main  
 	        ;;
+	    u) USERIDE="true"             # use if alredy have a usable config
+	    	;;	    	
 	    m) MACOS="true"
 	    	LAZWIDGET="cocoa"
 	        ;;
@@ -187,6 +194,9 @@ if [ ! "$INSTALL_CMD" == "" ]; then
     gtk2)
 	    CMD_LINE="sudo $INSTALL_CMD $GTK2DEPS"
 	    ;;
+	gtk3)
+		CMD_LINE="sudo $INSTALL_CMD $GTK3DEPS"
+		;;
 	qt5)
 	    CMD_LINE="sudo $INSTALL_CMD $QT5DEPS"
 	    ;;
@@ -358,6 +368,11 @@ echo "===== This will take a few minutes ...."
 #else
 	make "clean" "LCL_PLATFORM=$LAZWIDGET" "bigide" > build.log
 #fi
+
+if [ "$USERIDE" == "true" ]; then
+	echo "----- Restoring any existing config"
+	make "LCL_PLATFORM=$LAZWIDGET" "useride" >> build.log
+fi
 
 tail build.log
 echo "----------------------------------------------------------"
