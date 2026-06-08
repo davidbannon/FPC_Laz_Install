@@ -9,26 +9,18 @@ FPC-Lazarus Installer
 --------
 **FPC (3.2.4rc1, x86\_64 Linux)** (skip if you already have the FPC you want to use)
 
-$> cd ~/Downloads
-
-$> wget https://github.com/davidbannon/FPC\_Laz\_Install/raw/refs/heads/main/fpc-tar.bash
-
-$> wget https://github.com/davidbannon/FPC\_Laz\_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
-
-$> bash ./fpc-tar.bash -r -a
-
-$> source ~/.bashrc
-
+    $> cd ~/Downloads
+    $> wget https://github.com/davidbannon/FPC\_Laz\_Install/raw/refs/heads/main/fpc-tar.bash
+    $> wget https://github.com/davidbannon/FPC\_Laz\_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
+    $> bash ./fpc-tar.bash -r -a
+    $> source ~/.bashrc
 
 
 **Lazarus (main, gtk3)**
 
-$> wget https://github.com/davidbannon/FPC\_Laz\_Install/raw/refs/heads/main/make-lazarus.bash
-
-$> bash ./make-lazarus.bash -d -r -w gtk3 -v main
-
-$> cd $HOME/bin/Lazarus/lazarus-main; ./lazarus
-
+    $> wget https://github.com/davidbannon/FPC\_Laz\_Install/raw/refs/heads/main/make-lazarus.bash
+    $> bash ./make-lazarus.bash -d -r -w gtk3 -v main
+    $> cd $HOME/bin/Lazarus/lazarus-main; ./lazarus
 
 
 The above is really there for people testing the new suport for gtk3 but easily changed for ther versions.
