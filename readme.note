@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <note version="0.3" xmlns:link="http://beatniksoftware.com/tomboy/link" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns="http://beatniksoftware.com/tomboy">
   <title>FPC-Lazarus Installer</title>
-  
-<text xml:space="preserve"><note-content version="0.1"><underline>FPC-Lazarus Installer</underline>
+  <text xml:space="preserve"><note-content version="0.1">FPC-Lazarus Installer
+<bold>An easy way to get a working FPC Lazarus on Linux</bold>
 
-<size:large><bold>An easy way to get a working FPC Lazarus on Linux</bold></size:large>
+<size:large><bold>Quick Start Guide</bold></size:large>
+<bold>FPC (3.2.4rc1, x86_64 Linux)</bold> (skip if you already have the FPC you want to use)
+$&gt; cd ~/Downloads
+$&gt; wget https://github.com/davidbannon/FPC_Laz_Install/raw/refs/heads/main/fpc-tar.bash
+$&gt; wget https://github.com/davidbannon/FPC_Laz_Install/releases/download/v2.0/fpc-3-2-4rc1.tgz
+$&gt; bash ./fpc-tar.bash -r -a
+$&gt; source ~/.bashrc
+
+<bold>Lazarus (main, gtk3)</bold>
+$&gt; wget https://github.com/davidbannon/FPC_Laz_Install/raw/refs/heads/main/make-lazarus.bash
+$&gt; bash ./make-lazarus.bash -d -r -w gtk3 -v main
+$&gt; cd $HOME/bin/Lazarus/lazarus-main; ./lazarus
+
+The above is really there for people testing the new suport for gtk3 but easily changed for ther versions.
 
 <bold>New</bold> : a script to build  a FPC to suit the ESP32c3 embeded controller modual, see below.
 
@@ -160,8 +173,8 @@ The script does not expect command line options and it does NOT support working 
 
 
 </note-content></text>
-  <last-change-date>2026-02-18T22:18:30.0140368+11:00</last-change-date>
-  <last-metadata-change-date>2026-02-18T22:18:30.0140368+11:00</last-metadata-change-date>
+  <last-change-date>2026-06-08T13:26:05.3845203+10:00</last-change-date>
+  <last-metadata-change-date>2026-06-08T13:26:05.3845203+10:00</last-metadata-change-date>
   <create-date>2024-11-02T18:25:06.5454838+11:00</create-date>
   <cursor-position>1</cursor-position>
   <selection-bound-position>1</selection-bound-position>

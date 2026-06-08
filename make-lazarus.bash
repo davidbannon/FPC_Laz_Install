@@ -13,14 +13,14 @@ set -e
 
 # ---------------------------------------------------------
 # A quick and dirty script to build a working Lazarus
-# install on a deb based machine (and PCLinuxOS too).
+# install on a deb, rpm or packman based machine (and PCLinuxOS too).
 # Always installs Lazarus from source, looks for a zip in current dir and ~/Downloads
 # depends on what ever FPC is on PATH and
 # if Qt5 enabled, libqt5pas-dev. Checks for both and tries to
 # install from distro repo if not already present.
 # Note that repo versions of libqt5pas-dev may not be current.
-# Does not consider FPC-main suitable, use 3.2.4  (Hmm, why ??)
-# Creates a Lazarus Desktop and icon so should appear in your menus. 
+# Does not consider FPC-main suitable, would rather use 3.2.4  or 3.2.2
+# Creates a Lazarus Desktop and icon so should appear in your menus but asks first.
 
 # 2026-02-06 - Update to support Lazarus 4.4
 # 2026-04-03 - Update to support gtk3, not yet tested rpm or packman systems
@@ -32,7 +32,7 @@ LAZVER="4_6"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
-LAZWIDGET="gtk2"        # Use -w to set QT5 or QT6
+LAZWIDGET="gtk2"        # Use -w to set gtk3 QT5 or QT6
 # LAZDEBUG=""             # Has true if we want to build a debug version of Lazarus (its the default !)
 FPCVER="3.2.2"          # March 2025, 3.2.2 will work but I recommend 3.2.3 / 3.2.4
 FPCVER2="3.2.3"         # This is the 3.2.3-branch, when released will be 3.2.4 
@@ -101,6 +101,7 @@ function ShowHelp {
 	echo "If using -r, its a good idea to ensure your package manager is up todate."
 	echo "Makes a lazarus.cfg which defines where your lazarus config is kept."
 	echo "Looks for a downloaded lazarus zipball in first current dir, then ~/Downloads"
+	echo " eg  bash ./make-lazarus.bash -d -r -w gtk3 -v main"
 	exit;
 }
 
@@ -371,7 +372,8 @@ echo "===== This will take a few minutes ...."
 
 if [ "$USERIDE" == "true" ]; then
 	echo "----- Restoring any existing config"
-	make "LCL_PLATFORM=$LAZWIDGET" "useride" >> build.log
+	# make "LCL_PLATFORM=$LAZWIDGET" "useride" >> build.log
+	make "useride" >> build-u.log
 fi
 
 tail build.log
