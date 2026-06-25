@@ -28,7 +28,7 @@ set -e
 # NOTE - all recent Lazarus will build with FPC324 (despite officially recommending 322)
 
 # David Bannon - 2025-03-06
-LAZVER="4_6"		    # as it appears in file names, this is default !
+LAZVER="4_8"		    # as it appears in file names, this is default !
 LAZZIPNAME=""           # full name of the lazarus zip (no path)
 LAZGITHUB="https://gitlab.com/freepascal.org/lazarus/lazarus/-/archive/"            
 LAZDOWNURL=""           # The URL to download, varies between main, branch and tag !
@@ -50,7 +50,7 @@ INSTALL_CMD=""      # is set to distro install command if user sets -r
 function CleanLazVersion {
 	#echo "in CleanLazVersion LAZVER = $LAZVER"
 	case "$LAZVER" in
-		3_6 | 3_8 | 4_0 | 4_2 | 4_4 | 4_6 )    # Tags. 
+		3_6 | 3_8 | 4_0 | 4_2 | 4_4 | 4_6 | 4_8)    # Tags. 
 			LAZZIPNAME="lazarus-lazarus_""$LAZVER".zip
 			LAZDOWNURL="$LAZGITHUB"lazarus_"$LAZVER"/"$LAZZIPNAME"
 			LAZFINALNAME="lazarus_""$LAZVER"                # note underscore
@@ -90,7 +90,7 @@ function ShowHelp {
 	echo "   -w widget Lazarus Widget, gtk2, gtk3, qt5, qt6"
 	echo "   -f rel    Lazarus Release, tag from file name, defaults to 4_6, can be -"
 	echo "               main; fixes_4; lazarus-lazarus_* etc, use one of :"
-	echo "               main, fixes_4, 3_6, 3_8, 4_0, 4_2, 4_4, 4_6"
+	echo "               main, fixes_4, 3_6, 3_8, 4_0, 4_2, 4_4, 4_6, 4_8"
 	echo "   -v rel    Same as above."
 	echo "   -i dir    Install dir, default $HOME/bin/Lazarus but on a Pi maybe move to better disk" 
 	echo "   -I        Install dir is default for RasPi, $LAZROOTDIRPI"    # Very silly on other than RasPI !!  
@@ -113,8 +113,8 @@ function SetInstallMode {
 	apt | deb | debian)
 	   GTK2DEPS="libx11-dev libgtk2.0-dev"
 	   GTK3DEPS="libgtk-3-dev"
-	   QT5DEPS="libqt5pas-dev"
-	   QT6DEPS="libqt6pas-dev"
+	   QT5DEPS="libx11-dev libqt5pas-dev"
+	   QT6DEPS="libx11-dev libqt6pas-dev"
 	   INSTALL_CMD="apt install" 
 	   ;;
 	rpm | dnf)
